@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="library_includes :: frontend_libraries" />
+    <body>
+        
+        <div class="container-fluid" style="margin-top: 20px;">
+
+            <form th:action="@{/login/submit}" th:object="${userForm}" method="POST">
+                
+                <label for="inputPassword5" class="text-headline">Benutzername eingeben:</label>
+                <input type="text" th:field="*{username}" id="inputUsername" class="form-control" aria-describedby="usernameHelpBlock">
+                <small id="usernameHelpBlock" class="form-text text-muted">
+                  Dein Benutzername sollte nur aus Buchstaben und Zahlen bestehen und keine anderen Sonderzeichen enthalten.
+                </small>
+                <button type="submit" class="btn btn-lg btn-success full-width mt-2">
+                    Anmelden
+                </button>
+            </form>
+                
+            
+            <!-- Footer -->
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="light-grey-color" th:text="${build_artifact}" />
+                        <img class="goblin-logo-small" height="20px" th:src="@{/images/goblin_shadow_cropped.png}" />
+                        <a class="light-grey-color" th:text="${build_version}" />
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>

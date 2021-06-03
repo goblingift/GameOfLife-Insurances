@@ -1,0 +1,29 @@
+/*
+Copyright (C) 2020 Andre Kessler (https://github.com/goblingift)
+All rights reserved
+*/
+/* 
+    Created on : 19.11.2020, 23:13:28
+    Author     : andre
+*/
+
+.text-headline {
+    font-size: 1.25rem;
+}
+
+.faulty_answer {
+    border-color: red;
+    border-style: solid;
+}
+
+.correct_answer {
+    border-color: green;
+    border-style: solid;
+}
+
+@media(max-width: 768px) {
+    button.full-width {
+        width: 100%;  
+    }
+}
+
