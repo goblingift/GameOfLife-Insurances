@@ -7,6 +7,7 @@ package gift.goblin.goli.security.service;
 import gift.goblin.goli.database.model.ContractedInsurance;
 import gift.goblin.goli.database.model.User;
 import gift.goblin.goli.database.model.UserGameStatus;
+import gift.goblin.goli.database.repository.ContractedInsuranceRepository;
 import gift.goblin.goli.database.repository.UserGameStatusRepository;
 import gift.goblin.goli.enumerations.Insurance;
 import java.util.Optional;
@@ -32,6 +33,9 @@ public class GameCardService {
     
     @Autowired
     private CustomUserDetailsService userService;
+    
+    @Autowired
+    private ContractedInsuranceRepository contractedInsuranceRepository;
 
     /**
      * Handles the logic if an user answered a decision- or action-card.
@@ -76,6 +80,7 @@ public class GameCardService {
             }
             
             ContractedInsurance contractedInsurance = new ContractedInsurance(UUID.randomUUID().toString(), user, insurance.getId(), yearlyCost, answer);
+            contractedInsuranceRepository.save(contractedInsurance);
             userGameStatus.addContractedInsurance(contractedInsurance);
             userGameStatusRepository.save(userGameStatus);
             
