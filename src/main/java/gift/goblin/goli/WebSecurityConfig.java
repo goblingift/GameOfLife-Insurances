@@ -46,12 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static final String ROLE_PREFIX = "ROLE_";
     public static final String ROLE_USER = "USER";
     public static final String ROLE_ADMIN = "ADMIN";
-
-    public static final String ADMIN_USERNAME = "superadmin_master";
-    public static final String SESSION_FIELD_GAMESTATUS = "gamestatus";
+    public static final String SESSION_FIELD_USERGAMESTATUS = "usergamestatus";
     public static final String SESSION_FIELD_USERNAME = "username";
 
     @Autowired

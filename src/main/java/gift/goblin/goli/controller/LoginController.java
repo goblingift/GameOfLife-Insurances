@@ -5,7 +5,8 @@
 package gift.goblin.goli.controller;
 
 import gift.goblin.goli.WebSecurityConfig;
-import gift.goblin.goli.dto.UserGameStatus;
+import gift.goblin.goli.database.model.UserGameStatus;
+import gift.goblin.goli.database.repository.UserGameStatusRepository;
 import gift.goblin.goli.dto.UserCredentials;
 import gift.goblin.goli.security.service.CustomUserDetailsService;
 import javax.servlet.http.HttpSession;
@@ -41,6 +42,9 @@ public class LoginController {
 
     @Autowired
     private CustomUserDetailsService userService;
+    
+    @Autowired
+    private UserGameStatusRepository userGameStatusRepository;
 
     @GetMapping
     public String renderRegistrationForm(Model model) {
@@ -57,15 +61,41 @@ public class LoginController {
     public String registration(HttpSession session, @ModelAttribute("userForm") UserCredentials userForm, BindingResult bindingResult, Model model) {
         logger.info("User submitted login-form: {}", userForm);
         
-        session.setAttribute(WebSecurityConfig.SESSION_FIELD_GAMESTATUS, new UserGameStatus(userForm.getUsername()));
-        logger.info("Successful set username to session: {}", userForm.getUsername());
 
         UserDetails userDetails = userService.loadUserByUsername(userForm.getUsername());
+        if (userDetails != null) {
+            Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+            
+            UserGameStatus userGameStatus = userGameStatusRepository.findByUsername(userDetails.getUsername());
+            if (userGameStatus == null) {
+                userGameStatus = createNewUserGameStatus(userDetails.getUsername());
+            } else {
+                logger.info("Successful found existing UserGameStatus object in database- use them for this game: {}", userGameStatus);
+            }
+            session.setAttribute(WebSecurityConfig.SESSION_FIELD_USERGAMESTATUS, userGameStatus);
 
-        Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        return "redirect:/home";
+            session.setAttribute(WebSecurityConfig.SESSION_FIELD_USERNAME, userForm.getUsername());
+            logger.info("Successful set username to session: {}", userForm.getUsername());
+            
+            return "redirect:/home";
+        } else {
+            return "redirect:/login";
+        }
+        
+    }
+    
+    /**
+     * Creates new UserGameStatus and saves into database.
+     * @param username
+     * @return the created entity.
+     */
+    private UserGameStatus createNewUserGameStatus(String username) {
+        UserGameStatus newEntity = new UserGameStatus(username, 1);
+        userGameStatusRepository.save(newEntity);
+        
+        logger.info("Successful created new UserGameStatus in database for user: {}", username);
+        return newEntity;
     }
 
 }

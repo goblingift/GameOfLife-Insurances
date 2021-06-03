@@ -1,0 +1,91 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="library_includes :: frontend_libraries" />
+    <body>
+
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark" th:fragment="header_nav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <input disabled type="text" th:value="${userGameStatus.level}" id="input_level" class="form-control">
+                </li>
+            </ul>
+
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-success" data-toggle="modal" data-target="#modal-dialog"><span class="btn-label"><i class="fas fa-hand-paper fa-lg"></i></span> Nächste Karte ziehen</button>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+            </ul>
+        </nav>
+        
+        <div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <th:block th:switch="${userGameStatus.level}">
+                    <div th:case="1">
+                        <div th:replace="/decision/insurance_car :: replace_fragment" />
+                    </div>
+                    <div th:case="2">
+                        <!-- print object is not active -->
+                    </div>
+                    <div th:case="3">
+                        <!-- print object is new and active -->
+                    </div>
+                </th:block>
+            </div>
+        </div>
+        
+
+        <div class="container-fluid" style="margin-top: 20px;">
+
+            <img th:src="@{/images/game_board.jpg}" class="img-fluid" alt="game board image">
+
+                <!-- Footer -->
+                <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
+                    <ul class="navbar-nav mr-auto">
+                    </ul>
+
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="light-grey-color" th:text="${build_artifact}" />
+                            <img class="goblin-logo-small" height="20px" th:src="@{/images/goblin_shadow_cropped.png}" />
+                            <a class="light-grey-color" th:text="${build_version}" />
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav ml-auto">
+                    </ul>
+                </nav>
+        </div>
+    </body>
+    
+    
+    <script th:inline="javascript">
+
+
+        $("#form_decision").submit(function (e) {
+
+            e.preventDefault();
+
+            var level = $("#input_level").val();
+            var answer = this.answer.value;
+            
+            $.post("/game/make-decision",
+                {level: level, answer: answer},
+                function (response) {
+                    console.log("Successful submitted answer.");
+                }
+            );
+            
+            // Adding visual box
+            $('#modal-dialog').modal('hide');
+
+            return true;
+        });
+    </script
+    
+</html>
+
+

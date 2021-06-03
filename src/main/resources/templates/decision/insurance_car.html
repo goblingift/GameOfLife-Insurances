@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2021 Andre Kessler (https://github.com/goblingift)
+All rights reserved
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<div class="modal-content" th:fragment="replace_fragment">
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">KFZ-Versicherung</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"></span>
+        </button>
+    </div>
+    <div class="modal-body">
+        
+        <form id="form_decision" th:action="@{/game/make-decision}" method="POST">
+                <div class="form-group border p-1">
+                    <a th:text="#{decision.insurance-car.description}" />
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="answer" value="1" required="required" id="rb_answer_1">
+                              <label class="form-check-label" for="rb_answer_1">
+                                <a th:text="#{decision.insurance-car.answer-1}" />
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="answer" value="2" required="required" id="rb_answer_2">
+                              <label class="form-check-label" for="rb_answer_2">
+                                <a th:text="#{decision.insurance-car.answer-2}" />
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="answer" value="3" required="required" id="rb_answer_3">
+                              <label class="form-check-label" for="rb_answer_3">
+                                <a th:text="#{decision.insurance-car.answer-3}" />
+                              </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col" align="center">
+                        <button name="submit" type="submit" class="btn btn-success" style="height: 60px; width: 50%;">Speichern</button>
+                    </div>
+                </div>
+            </form>
+        
+    </div>
+</div>
+</html>

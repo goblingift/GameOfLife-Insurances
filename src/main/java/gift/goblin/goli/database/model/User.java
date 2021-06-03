@@ -3,12 +3,9 @@
  * All rights reserved
  */
 package gift.goblin.goli.database.model;
-import gift.goblin.goli.database.model.Role;
 import java.util.Objects;
 import java.util.Set;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.IndexDirection;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -25,7 +22,9 @@ public class User {
     private String fullname;
     @DBRef
     private Set<Role> roles;
-    
+    @DBRef
+    private Set<ContractedInsurance> insurances;
+   
 
     public String getId() {
         return id;
@@ -59,6 +58,14 @@ public class User {
         this.roles = roles;
     }
 
+    public Set<ContractedInsurance> getInsurances() {
+        return insurances;
+    }
+
+    public void setInsurances(Set<ContractedInsurance> insurances) {
+        this.insurances = insurances;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 7;
@@ -96,11 +103,9 @@ public class User {
         return true;
     }
 
-    
-    
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", fullname=" + fullname + ", roles=" + roles + '}';
+        return "User{" + "id=" + id + ", fullname=" + fullname + ", roles=" + roles + ", insurances=" + insurances + '}';
     }
 
 }

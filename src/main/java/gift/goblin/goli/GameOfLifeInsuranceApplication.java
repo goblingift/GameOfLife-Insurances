@@ -22,7 +22,7 @@ public class GameOfLifeInsuranceApplication {
     @Scope(value = WebApplicationContext.SCOPE_APPLICATION)
     public GameStatus getGameStatus() {
         logger.info("Created new GameStatus-object.");
-        return new GameStatus();
+        return new GameStatus(true, true);
     }
 
 }

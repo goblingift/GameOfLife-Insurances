@@ -13,6 +13,11 @@ public class GameStatus {
     private boolean createCards;
     private boolean gameEnabled;
 
+    public GameStatus(boolean createCards, boolean gameEnabled) {
+        this.createCards = createCards;
+        this.gameEnabled = gameEnabled;
+    }
+
     public boolean isCreateCards() {
         return createCards;
     }
