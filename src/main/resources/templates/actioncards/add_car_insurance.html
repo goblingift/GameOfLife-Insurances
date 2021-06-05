@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2021 Andre Kessler (https://github.com/goblingift)
+All rights reserved
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="replace_fragment">
+        <div class="form-group">
+            <a class="text-headline">Fragestellung:</a> 
+            <textarea id="textarea" name="text" cols="40" rows="5" required="required" class="form-control"></textarea>
+        </div>
+
+        <div class="form-group">
+            <a class="text-headline">Schadenssumme in Euro:</a> 
+            <input id="input_damageAmount" type="number" step="0.01" name="damageAmount" required="required" class="form-control">
+        </div>
+        
+        <div>
+            <a class="text-headline">Welche Versicherung deckt den Schaden ab?:</a>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="chk_answer_1" name="coveredByHaftpflicht">
+                <label class="form-check-label" for="chk_answer_1">
+                    Haftpflichtversicherung
+                </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="chk_answer_2" name="coveredByTeilkasko">
+                <label class="form-check-label" for="chk_answer_2">
+                    Teilkaskoversicherung
+                </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="chk_answer_3" name="coveredByVollkasko">
+                <label class="form-check-label" for="chk_answer_3">
+                    Vollkaskoversicherung
+                </label>
+        </div>
+
+    </div>
+</html>

@@ -1,0 +1,93 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="library_includes :: frontend_libraries" />
+    <body>
+        
+        <div class="container-fluid" style="margin-top: 20px;">
+            
+            <div th:if="${display_success}" class="alert alert-success" id="success-alert" role="alert">
+              Actionkarte wurde erfolgreich gespeichert.
+            </div>
+            
+            <div>
+                <p class="text-headline">
+                    Neue Aktionskarte erstellen:
+                </p>
+            </div>
+            
+            
+            <div th:switch="${actionUrl != null && actionUrl != ''}">
+                <div th:case="true">
+                    <form method="POST" th:action="${actionUrl}" id="frm_new_actioncard">
+                </div>
+                <div th:case="false">
+                    <form method="POST" action="/cards/select-insurance" id="frm_new_actioncard">
+                </div>
+            </div>
+            
+              <div class="form-group">
+                <a class="text-headline">Kategorie:</a>
+                <select required id="dd_insurance" class="form-control" name="insuranceId" onChange="onChangeDropdownInsurance(this.options[this.selectedIndex].value)">
+                  <option selected value="">Bitte Kategorie wählen...</option>
+                  <div th:each="actObject,iterStat : ${insurances}">
+                      <div th:switch="${selectedInsurance != null && selectedInsurance == actObject.key}">
+                          <div th:case="true">
+                              <option selected th:value="${actObject.key}" th:text="${actObject.value}"></option>
+                          </div>
+                          <div th:case="false">
+                              <option th:value="${actObject.key}" th:text="${actObject.value}"></option>
+                          </div>
+                      </div>
+                        
+                  </div>
+                </select>
+              </div>
+              
+              <th:block th:switch="${selectedInsurance}">
+                    <div th:case="101">
+                        <div th:replace="/actioncards/add_car_insurance :: replace_fragment" />
+                    </div>
+                    <div th:case="2">
+                        <!-- print object is not active -->
+                    </div>
+                    <div th:case="3">
+                        <!-- print object is new and active -->
+                    </div>
+                </th:block>
+                
+              <div class="float-right">
+                <a role="button" class="btn btn-link" href="/home">Zum Hauptmenü</a>
+                <button name="submit" id="btn_submit" type="submit" class="btn btn-success">Speichern</button>
+              </div>
+            </form>
+            
+        </div>
+    </body>
+    
+    <script th:inline="javascript">
+        $("#success-alert").fadeTo(3000, 500).slideUp(500, function(){
+            $("#success-alert").slideUp(500);
+        });
+        
+        function onChangeDropdownInsurance(insuranceId) {
+            if (insuranceId !== null && insuranceId !== '') {
+                
+                console.log("TRIGGERED: " + insuranceId);
+                $('#btn_submit').click();
+                
+                //$.post("/cards/select-insurance",
+                //{insuranceId: insuranceId},
+                //function (response) {
+                //    console.log("Successful submitted answer.");
+                //}
+                //);
+                
+                //$.get( "/cards/get-actionurl/" + insuranceId, function( data ) {
+                //  console.log("Successful found new action-url for form:" + data);
+                //  $('#frm_new_actioncard').attr('action', data);
+                //});
+                
+            }
+        };
+        
+    </script>
+</html>
