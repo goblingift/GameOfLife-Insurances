@@ -16,12 +16,13 @@ import java.util.Optional;
  */
 public enum Insurance {
     
-    CAR_INSURANCE(101, 1, "KFZ-Versicherung", 600.00, 900.00, 1200.00, CardController.BASE_URL_CARDS + "/add/car-insurance"),
-    LIABILITY_INSURANCE(102, 2, "Haftpflichtversicherung", 0.00, 35.00, 70.00, CardController.BASE_URL_CARDS + "/add/liability-insurance");
-    
+    CAR_INSURANCE(101, 1, "KFZ-Versicherung", 600.00, 900.00, 1200.00, CardController.BASE_URL_CARDS + "/add/car-insurance", "/actioncards/add_car_insurance :: replace_fragment"),
+    LIABILITY_INSURANCE(102, 2, "Haftpflichtversicherung", 0.00, 35.00, 70.00, CardController.BASE_URL_CARDS + "/add/liability-insurance", "/actioncards/add_liability_insurance :: replace_fragment"),
+    DISABILITY_INSURANCE(103, 3, "Berufsunfähigkeitsversicherung", 0.00, 600.00, 1200.00, CardController.BASE_URL_CARDS + "/add/disability-insurance", "/actioncards/add_disability_insurance :: replace_fragment"),
+    HOUSEHOLD_INSURANCE(104, 4, "Hausratsversicherung", 0.00, 500.00, 800.00, CardController.BASE_URL_CARDS + "/add/household-insurance", "/actioncards/add_household_insurance :: replace_fragment");
     
 
-    private Insurance(int id, int level, String name, double priceYearly1, double priceYearly2, double priceYearly3, String addCardEndpoint) {
+    private Insurance(int id, int level, String name, double priceYearly1, double priceYearly2, double priceYearly3, String addCardEndpoint, String templatePath) {
         this.id = id;
         this.level = level;
         this.name = name;
@@ -29,6 +30,7 @@ public enum Insurance {
         this.priceYearly2 = priceYearly2;
         this.priceYearly3 = priceYearly3;
         this.addCardEndpoint = addCardEndpoint;
+        this.templatePath = templatePath;
     }
     
     private static final List<Insurance> VALUES = Collections.unmodifiableList(Arrays.asList(values()));
@@ -42,6 +44,7 @@ public enum Insurance {
     private double priceYearly3;
     // Contains the URL, which can be called to create new actioncard for this insurance-type
     private String addCardEndpoint;
+    private String templatePath;
 
     public static List<Insurance> getValues() {
         return VALUES;
@@ -85,6 +88,10 @@ public enum Insurance {
 
     public String getAddCardEndpoint() {
         return addCardEndpoint;
+    }
+
+    public String getTemplatePath() {
+        return templatePath;
     }
     
 }

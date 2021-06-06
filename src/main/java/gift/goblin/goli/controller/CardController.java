@@ -4,10 +4,13 @@
  */
 package gift.goblin.goli.controller;
 
-import gift.goblin.goli.database.model.UserGameStatus;
 import gift.goblin.goli.database.model.actioncards.CarInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.DisabilityInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.HouseholdInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.LiabilityInsuranceActionCard;
 import gift.goblin.goli.database.repository.actioncards.CarInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.DisabilityInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.HouseholdInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.LiabilityInsuranceActionCardRepository;
 import gift.goblin.goli.dto.InsuranceSelection;
 import gift.goblin.goli.enumerations.Insurance;
@@ -24,7 +27,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -45,6 +47,12 @@ public class CardController {
 
     @Autowired
     LiabilityInsuranceActionCardRepository liabilityInsuranceActionCardRepository;
+
+    @Autowired
+    DisabilityInsuranceActionCardRepository disabilityInsuranceActionCardRepository;
+    
+    @Autowired
+    HouseholdInsuranceActionCardRepository householdInsuranceActionCardRepository;
 
     @GetMapping(value = {"/create"})
     public String renderCreateCard(Model model) {
@@ -102,17 +110,16 @@ public class CardController {
     public String getFormContent(InsuranceSelection insuranceSelection, HttpSession session, Model model) {
         logger.info("Delivering fragment for insurance: {}", insuranceSelection.getInsuranceId());
 
-        switch (insuranceSelection.getInsuranceId()) {
-            case 101:
-                model.addAttribute("actionUrl", Insurance.CAR_INSURANCE.getAddCardEndpoint());
-                model.addAttribute("insuranceId", Insurance.CAR_INSURANCE.getId());
-                return "/actioncards/add_car_insurance :: replace_fragment";
-            case 102:
-                model.addAttribute("actionUrl", Insurance.LIABILITY_INSURANCE.getAddCardEndpoint());
-                model.addAttribute("insuranceId", Insurance.LIABILITY_INSURANCE.getId());
-                return "/actioncards/add_liability_insurance :: replace_fragment";
-            default:
-                throw new IllegalArgumentException("The given insurance-ID cant get resolved to a template-fragment:" + insuranceSelection.getInsuranceId());
+        Optional<Insurance> optInsurance = Insurance.getValues().stream().filter(i -> i.getId() == insuranceSelection.getInsuranceId()).findAny();
+        if (optInsurance.isPresent()) {
+
+            Insurance selectedInsurance = optInsurance.get();
+            model.addAttribute("actionUrl", selectedInsurance.getAddCardEndpoint());
+            model.addAttribute("insuranceId", selectedInsurance.getId());
+            return selectedInsurance.getTemplatePath();
+        } else {
+            logger.warn("User tried to get form for invalid insurance-id: {}", insuranceSelection);
+            return null;
         }
     }
 
@@ -152,6 +159,30 @@ public class CardController {
         logger.info("Create new actioncard for a liability-insurance: {}", actionCard);
         actionCard.setId(UUID.randomUUID().toString());
         LiabilityInsuranceActionCard savedActionCard = liabilityInsuranceActionCardRepository.save(actionCard);
+        logger.info("Successful created new actionCard in database: {}", savedActionCard);
+
+        model.addAttribute("display_success", true);
+        return renderCreateCard(model);
+    }
+
+    @PostMapping(value = {"/add/disability-insurance"})
+    public String createActionCardDisabilityInsurance(DisabilityInsuranceActionCard actionCard, BindingResult bindingResult, Model model) {
+
+        logger.info("Create new actioncard for a disability-insurance: {}", actionCard);
+        actionCard.setId(UUID.randomUUID().toString());
+        DisabilityInsuranceActionCard savedActionCard = disabilityInsuranceActionCardRepository.save(actionCard);
+        logger.info("Successful created new actionCard in database: {}", savedActionCard);
+
+        model.addAttribute("display_success", true);
+        return renderCreateCard(model);
+    }
+
+    @PostMapping(value = {"/add/household-insurance"})
+    public String createActionCardHouseholdInsurance(HouseholdInsuranceActionCard actionCard, BindingResult bindingResult, Model model) {
+
+        logger.info("Create new actioncard for a disability-insurance: {}", actionCard);
+        actionCard.setId(UUID.randomUUID().toString());
+        HouseholdInsuranceActionCard savedActionCard = householdInsuranceActionCardRepository.save(actionCard);
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
