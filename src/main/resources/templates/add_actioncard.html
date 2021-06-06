@@ -14,16 +14,6 @@
                 </p>
             </div>
             
-            
-            <div th:switch="${actionUrl != null && actionUrl != ''}">
-                <div th:case="true">
-                    <form method="POST" th:action="${actionUrl}" id="frm_new_actioncard">
-                </div>
-                <div th:case="false">
-                    <form method="POST" action="/cards/select-insurance" id="frm_new_actioncard">
-                </div>
-            </div>
-            
               <div class="form-group">
                 <a class="text-headline">Kategorie:</a>
                 <select required id="dd_insurance" class="form-control" name="insuranceId" onChange="onChangeDropdownInsurance(this.options[this.selectedIndex].value)">
@@ -42,23 +32,10 @@
                 </select>
               </div>
               
-              <th:block th:switch="${selectedInsurance}">
-                    <div th:case="101">
-                        <div th:replace="/actioncards/add_car_insurance :: replace_fragment" />
-                    </div>
-                    <div th:case="102">
-                        <div th:replace="/actioncards/add_liability_insurance :: replace_fragment" />
-                    </div>
-                    <div th:case="3">
-                        <!-- print object is new and active -->
-                    </div>
-                </th:block>
+            <div id="replace_div">
+            </div>
                 
-              <div class="float-right">
-                <a role="button" class="btn btn-link" href="/home">Zum Hauptmenü</a>
-                <button name="submit" id="btn_submit" type="submit" class="btn btn-success">Speichern</button>
-              </div>
-            </form>
+              
             
         </div>
     </body>
@@ -72,20 +49,13 @@
             if (insuranceId !== null && insuranceId !== '') {
                 
                 console.log("TRIGGERED: " + insuranceId);
-                $('#btn_submit').click();
                 
-                //$.post("/cards/select-insurance",
-                //{insuranceId: insuranceId},
-                //function (response) {
-                //    console.log("Successful submitted answer.");
-                //}
-                //);
-                
-                //$.get( "/cards/get-actionurl/" + insuranceId, function( data ) {
-                //  console.log("Successful found new action-url for form:" + data);
-                //  $('#frm_new_actioncard').attr('action', data);
-                //});
-                
+                $.post("/cards/get-form",
+                {insuranceId: insuranceId},
+                function (fragment) {
+                    $("#replace_div").replaceWith(fragment); // update snippet of page
+                }
+                );
             }
         };
         

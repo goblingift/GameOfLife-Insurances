@@ -4,6 +4,7 @@
  */
 package gift.goblin.goli.controller;
 
+import gift.goblin.goli.database.model.UserGameStatus;
 import gift.goblin.goli.database.model.actioncards.CarInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.LiabilityInsuranceActionCard;
 import gift.goblin.goli.database.repository.actioncards.CarInsuranceActionCardRepository;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -36,10 +39,10 @@ public class CardController {
     public static final String BASE_URL_CARDS = "/cards";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     @Autowired
     CarInsuranceActionCardRepository carInsuranceActionCardRepository;
-    
+
     @Autowired
     LiabilityInsuranceActionCardRepository liabilityInsuranceActionCardRepository;
 
@@ -71,12 +74,12 @@ public class CardController {
         if (optActionUrl.isPresent()) {
             model.addAttribute("actionUrl", optActionUrl.get());
         }
-        
+
         model.addAttribute("selectedInsurance", insuranceSelection.getInsuranceId());
         return renderCreateCard(model);
     }
-    
-     /**
+
+    /**
      * Will return the action-url for the given insurance, to add new
      * action-card for it.
      *
@@ -95,7 +98,24 @@ public class CardController {
         return returnValue;
     }
 
-    
+    @PostMapping("/get-form")
+    public String getFormContent(InsuranceSelection insuranceSelection, HttpSession session, Model model) {
+        logger.info("Delivering fragment for insurance: {}", insuranceSelection.getInsuranceId());
+
+        switch (insuranceSelection.getInsuranceId()) {
+            case 101:
+                model.addAttribute("actionUrl", Insurance.CAR_INSURANCE.getAddCardEndpoint());
+                model.addAttribute("insuranceId", Insurance.CAR_INSURANCE.getId());
+                return "/actioncards/add_car_insurance :: replace_fragment";
+            case 102:
+                model.addAttribute("actionUrl", Insurance.LIABILITY_INSURANCE.getAddCardEndpoint());
+                model.addAttribute("insuranceId", Insurance.LIABILITY_INSURANCE.getId());
+                return "/actioncards/add_liability_insurance :: replace_fragment";
+            default:
+                throw new IllegalArgumentException("The given insurance-ID cant get resolved to a template-fragment:" + insuranceSelection.getInsuranceId());
+        }
+    }
+
     /**
      * Action method which will get triggered if the user selected car-insurance
      * and submitted form.
@@ -112,11 +132,20 @@ public class CardController {
         actionCard.setId(UUID.randomUUID().toString());
         CarInsuranceActionCard savedActionCard = carInsuranceActionCardRepository.save(actionCard);
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
-        
+
         model.addAttribute("display_success", true);
         return renderCreateCard(model);
     }
-    
+
+    /**
+     * Action method which will get triggered if the user selected
+     * liability-insurance (Private Haftpflicht) and submitted the form.
+     *
+     * @param actionCard
+     * @param bindingResult
+     * @param model
+     * @return
+     */
     @PostMapping(value = {"/add/liability-insurance"})
     public String createActionCardLiabilityInsurance(LiabilityInsuranceActionCard actionCard, BindingResult bindingResult, Model model) {
 
@@ -124,11 +153,9 @@ public class CardController {
         actionCard.setId(UUID.randomUUID().toString());
         LiabilityInsuranceActionCard savedActionCard = liabilityInsuranceActionCardRepository.save(actionCard);
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
-        
+
         model.addAttribute("display_success", true);
         return renderCreateCard(model);
     }
-
-
 
 }

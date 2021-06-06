@@ -5,15 +5,24 @@ All rights reserved
 -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <div th:fragment="replace_fragment">
-        <div class="form-group">
-            <a class="text-headline">Beschreibung des Versicherungsfalles:</a> 
-            <textarea id="textarea" name="text" cols="40" rows="5" required="required" class="form-control"></textarea>
-        </div>
+        <div id="replace_div">
+            <form method="POST" th:action="${actionUrl}" id="frm_new_actioncard">
+                <input type="hidden" name="insuranceId" th:value="${insuranceId}">
+                    <div class="form-group">
+                        <a class="text-headline">Beschreibung des Versicherungsfalles:</a> 
+                        <textarea id="textarea" name="text" cols="40" rows="5" required="required" class="form-control"></textarea>
+                    </div>
 
-        <div class="form-group">
-            <a class="text-headline">Schadenssumme in Euro:</a> 
-            <input id="input_damageAmount" type="number" step="0.01" name="damageAmount" required="required" class="form-control">
+                    <div class="form-group">
+                        <a class="text-headline">Schadenssumme in Euro:</a> 
+                        <input id="input_damageAmount" type="number" step="0.01" name="damageAmount" required="required" class="form-control">
+                    </div>
+                    
+                    <div class="float-right">
+                    <a role="button" class="btn btn-link" href="/home">Zum Hauptmenü</a>
+                    <button name="submit" id="btn_submit" type="submit" class="btn btn-success">Speichern</button>
+                </div>
+            </form>
         </div>
-
     </div>
 </html>

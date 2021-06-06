@@ -72,8 +72,6 @@ All rights reserved
 
                                 console.log("Successful submitted answer- will update UI for next card now!");
                                 $.get("/game/get-dialog").done(function (fragment) { // get from controller
-                                    console.log("Received fragment from backend:");
-                                    console.log(fragment);
                                     $("#replace_div").replaceWith(fragment); // update snippet of page
                                 });
 
