@@ -59,39 +59,6 @@
     </body>
     
     
-    <script th:inline="javascript">
-        $("#form_decision").submit(function (e) {
-
-            e.preventDefault();
-
-            var level = $("#input_level").val();
-            var answer = this.answer.value;
-            
-            console.log("will fire ajax post with params:");
-            console.log("level=" + level);
-            console.log("answer=" + answer);
-            
-            $.post("/game/make-decision",
-                {level: level, answer: answer},
-                function (response) {
-                    
-                    console.log("Successful submitted answer- will update UI for next card now!");
-                    $.get("/game/get-dialog").done(function(fragment) { // get from controller
-                        $("#replace_div").replaceWith(fragment); // update snippet of page
-                    });
-                    
-                    // Update level counter
-                    $('#input_level').val(parseInt(level) + 1);
-                }
-            );
-            
-            // Adding visual box
-            $('#modal-dialog').modal('hide');
-
-            return true;
-        });
-    </script>
-    
 </html>
 
 
