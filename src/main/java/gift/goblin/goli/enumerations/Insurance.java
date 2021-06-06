@@ -16,7 +16,8 @@ import java.util.Optional;
  */
 public enum Insurance {
     
-    CAR_INSURANCE(101, 1, "KFZ-Versicherung", 600.00, 900.00, 1200.00, CardController.BASE_URL_CARDS + "/add/car-insurance");
+    CAR_INSURANCE(101, 1, "KFZ-Versicherung", 600.00, 900.00, 1200.00, CardController.BASE_URL_CARDS + "/add/car-insurance"),
+    LIABILITY_INSURANCE(102, 2, "Haftpflichtversicherung", 0.00, 35.00, 70.00, CardController.BASE_URL_CARDS + "/add/liability-insurance");
     
     
 

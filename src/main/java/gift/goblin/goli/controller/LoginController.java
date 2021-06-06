@@ -70,10 +70,7 @@ public class LoginController {
             UserGameStatus userGameStatus = userGameStatusRepository.findByUsername(userDetails.getUsername());
             if (userGameStatus == null) {
                 userGameStatus = createNewUserGameStatus(userDetails.getUsername());
-            } else {
-                logger.info("Successful found existing UserGameStatus object in database- use them for this game: {}", userGameStatus);
             }
-            session.setAttribute(WebSecurityConfig.SESSION_FIELD_USERGAMESTATUS, userGameStatus);
 
             session.setAttribute(WebSecurityConfig.SESSION_FIELD_USERNAME, userForm.getUsername());
             logger.info("Successful set username to session: {}", userForm.getUsername());

@@ -24,14 +24,11 @@
         <div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <th:block th:switch="${userGameStatus.level}">
-                    <div th:case="1">
-                        <div th:replace="/decision/insurance_car :: replace_fragment" />
+                    <div id="replace_div" th:case="*">
+                        <div th:replace="/decision/triple_options_decision :: replace_fragment" />
                     </div>
-                    <div th:case="2">
+                    <div th:case="9999">
                         <!-- print object is not active -->
-                    </div>
-                    <div th:case="3">
-                        <!-- print object is new and active -->
                     </div>
                 </th:block>
             </div>
@@ -63,8 +60,6 @@
     
     
     <script th:inline="javascript">
-
-
         $("#form_decision").submit(function (e) {
 
             e.preventDefault();
@@ -72,10 +67,21 @@
             var level = $("#input_level").val();
             var answer = this.answer.value;
             
+            console.log("will fire ajax post with params:");
+            console.log("level=" + level);
+            console.log("answer=" + answer);
+            
             $.post("/game/make-decision",
                 {level: level, answer: answer},
                 function (response) {
-                    console.log("Successful submitted answer.");
+                    
+                    console.log("Successful submitted answer- will update UI for next card now!");
+                    $.get("/game/get-dialog").done(function(fragment) { // get from controller
+                        $("#replace_div").replaceWith(fragment); // update snippet of page
+                    });
+                    
+                    // Update level counter
+                    $('#input_level').val(parseInt(level) + 1);
                 }
             );
             
@@ -84,7 +90,7 @@
 
             return true;
         });
-    </script
+    </script>
     
 </html>
 

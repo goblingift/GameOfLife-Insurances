@@ -37,6 +37,12 @@ public class GameCardService {
     @Autowired
     private ContractedInsuranceRepository contractedInsuranceRepository;
 
+    
+    public UserGameStatus getUserGameStatus(String username) {
+        UserGameStatus userGameStatus = userGameStatusRepository.findByUsername(username);
+        return userGameStatus;
+    }
+    
     /**
      * Handles the logic if an user answered a decision- or action-card.
      *
@@ -79,10 +85,19 @@ public class GameCardService {
                     yearlyCost = 0.0;
             }
             
-            ContractedInsurance contractedInsurance = new ContractedInsurance(UUID.randomUUID().toString(), user, insurance.getId(), yearlyCost, answer);
-            contractedInsuranceRepository.save(contractedInsurance);
-            userGameStatus.addContractedInsurance(contractedInsurance);
-            userGameStatusRepository.save(userGameStatus);
+            // check if user already approved this insurance
+            Optional<ContractedInsurance> optContractedInsurance = contractedInsuranceRepository.findByUserAndInsuranceId(user, insurance.getId());
+            if (optContractedInsurance.isPresent()) {
+                ContractedInsurance contractedInsurance = optContractedInsurance.get();
+                contractedInsurance.setSelectedChoice(answer);
+                contractedInsurance.setYearlyCost(yearlyCost);
+                contractedInsuranceRepository.save(contractedInsurance);
+            } else {
+                ContractedInsurance contractedInsurance = new ContractedInsurance(UUID.randomUUID().toString(), user, insurance.getId(), yearlyCost, answer);
+                contractedInsuranceRepository.save(contractedInsurance);
+                userGameStatus.addContractedInsurance(contractedInsurance);
+                userGameStatusRepository.save(userGameStatus);
+            }
             
             return true;
         } else {
@@ -91,5 +106,30 @@ public class GameCardService {
         }
         
     }
+    
+    /**
+     * Moves the user to next level.
+     * @param username the username.
+     * @param level the current level of the user.
+     * @return true if successful, false if e.g. the given level doesnt equal the current level of users gamestatus in DB.
+     */
+    public boolean moveUserToNextLevel(String username, int level) {
+        
+        UserGameStatus userGameStatus = userGameStatusRepository.findByUsername(username);
+        
+        if (userGameStatus.getLevel() != level) {
+            logger.warn("Couldnt move user to next level, because current game level ({}) isnt equal like the saved level in DB: {}",
+                    level, userGameStatus.getLevel());
+            return false;
+        }
+        
+        int nextLevel = level + 1;
+        userGameStatus.setLevel(nextLevel);
+        userGameStatusRepository.save(userGameStatus);
+        logger.info("Successful set user {} to next level in DB: {}", username, nextLevel);
+        
+        return true;
+    }
+    
 
 }
