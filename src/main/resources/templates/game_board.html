@@ -12,7 +12,7 @@
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                     <div class="btn-group btn-group-lg mr-2" role="group">
-                        <button type="button" class="btn btn-labeled btn-success" data-toggle="modal" data-target="#modal-dialog"><span class="btn-label"><i class="fas fa-hand-paper fa-lg"></i></span> Nächste Karte ziehen</button>
+                        <button type="button" class="btn btn-labeled btn-success" id="btn_nextCard" data-toggle="modal" data-target="#modal-dialog"><span class="btn-label"><i class="fas fa-hand-paper fa-lg"></i></span> Nächste Karte ziehen</button>
                     </div>
                 </li>
             </ul>
@@ -20,20 +20,20 @@
             <ul class="navbar-nav ml-auto">
             </ul>
         </nav>
-        
+
         <div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <th:block th:switch="${userGameStatus.level}">
-                    <div id="replace_div" th:case="*">
+                <th:block th:switch="${levelType}">
+                    <div id="replace_div" th:case="INSURANCE">
                         <div th:replace="/decision/triple_options_decision :: replace_fragment" />
                     </div>
-                    <div th:case="9999">
-                        <!-- print object is not active -->
+                    <div id="replace_div" th:case="DECISION">
+                        <div th:replace="/decision/two_options_decision :: replace_fragment" />
                     </div>
                 </th:block>
             </div>
         </div>
-        
+
 
         <div class="container-fluid" style="margin-top: 20px;">
 
@@ -57,8 +57,23 @@
                 </nav>
         </div>
     </body>
-    
-    
+
+
+    <script th:inline="javascript">
+
+        $(document).ready(function () {
+            $("#btn_nextCard").click(function () {
+                console.log("Clicked nextCard button");
+
+                $.get("/game/get-dialog").done(function (fragment) { // get from controller
+                    $("#replace_div").replaceWith(fragment); // update snippet of page
+                });
+
+            });
+        });
+
+
+    </script>
 </html>
 
 

@@ -7,7 +7,10 @@ package gift.goblin.goli.controller;
 import gift.goblin.goli.WebSecurityConfig;
 import gift.goblin.goli.database.model.UserGameStatus;
 import gift.goblin.goli.dto.DecisionAnswer;
+import gift.goblin.goli.enumerations.Level;
+import gift.goblin.goli.enumerations.LevelType;
 import gift.goblin.goli.security.service.GameCardService;
+import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,8 +43,18 @@ public class GameController {
     @GetMapping
     public String renderGameBoard(HttpSession session, Model model) {
         logger.info("User opened game board page.");
-
-        model.addAttribute("userGameStatus", gameCardService.getUserGameStatus(getUsernameFromSession(session)));
+        
+        UserGameStatus userGameStatus = gameCardService.getUserGameStatus(getUsernameFromSession(session));
+        Optional<Level> optLevel = Level.findByLevel(userGameStatus.getLevel());
+        
+        if (optLevel.isPresent()) {
+            logger.info("Adding levelType to model: {}", optLevel.get().getLevelType().toString());
+            model.addAttribute("levelType", optLevel.get().getLevelType().toString());
+        } else {
+            logger.warn("Couldnt resolve the level: {}", userGameStatus.getLevel());
+        }
+        
+        model.addAttribute("userGameStatus", userGameStatus);
         model.addAttribute("build_artifact", buildProperties.getArtifact());
         model.addAttribute("build_version", buildProperties.getVersion());
         return "game_board";
@@ -69,11 +82,28 @@ public class GameController {
     @GetMapping("/get-dialog")
     public String getDialogContent(HttpSession session, Model model) {
         UserGameStatus userGameStatus = gameCardService.getUserGameStatus(getUsernameFromSession(session));
+        model.addAttribute("userGameStatus", userGameStatus);
         logger.info("usergame before getting new fragment: {}", userGameStatus);
         
-        model.addAttribute("userGameStatus", userGameStatus);
+        // check what kind of action will be next
+        Optional<Level> optLevel = Level.findByLevel(userGameStatus.getLevel());
+        if (optLevel.isPresent()) {
+            LevelType nextLevelType = optLevel.get().getLevelType();
+            switch (nextLevelType) {
+                case INSURANCE:
+                    return "/decision/triple_options_decision :: replace_fragment";
+                case DECISION:
+                    return "/decision/two_options_decision :: replace_fragment";
+                default:
+                    throw new AssertionError();
+            }
+        } else {
+            logger.warn("Couldnt resolve the level: {}", userGameStatus.getLevel());
+        }
         
-        return "/decision/triple_options_decision :: replace_fragment";
+        
+        
+        return null;
     }
 
 }
