@@ -6,6 +6,7 @@ package gift.goblin.goli.controller;
 
 import gift.goblin.goli.WebSecurityConfig;
 import gift.goblin.goli.database.model.UserGameStatus;
+import gift.goblin.goli.dto.ActionCardText;
 import gift.goblin.goli.dto.DecisionAnswer;
 import gift.goblin.goli.enumerations.Level;
 import gift.goblin.goli.enumerations.LevelType;
@@ -67,23 +68,30 @@ public class GameController {
     @PostMapping("/make-decision")
     @ResponseBody
     public void submitDecision(DecisionAnswer decisionAnswer, HttpSession session, Model model) {
-
+        
         logger.info("Called submitDecision with data: {}", decisionAnswer);
-        boolean handledUserDecision = gameCardService.handleUserDecision(getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
+        
+        Optional<Level> optLevel = Level.findByLevel(decisionAnswer.getLevel());
+        if (optLevel.isEmpty()) {
+            logger.warn("User tried to make decision for unknown level: {}", decisionAnswer.getLevel());
+            return;
+        }
+        // If user is currently in a level where a decision can be made, handle it
+        if (optLevel.get().getLevelType() == LevelType.DECISION || optLevel.get().getLevelType() == LevelType.INSURANCE) {
+            boolean handledUserDecision = gameCardService.handleUserDecision(getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
+        }
         
         // Set player to next level
         gameCardService.moveUserToNextLevel(getUsernameFromSession(session), decisionAnswer.getLevel());
-        
-        //return renderGameBoard(session, model);
-        //return "redirect:/game";
     }
     
     
     @GetMapping("/get-dialog")
     public String getDialogContent(HttpSession session, Model model) {
+        
+        // User picked new card- so update the level of the user
         UserGameStatus userGameStatus = gameCardService.getUserGameStatus(getUsernameFromSession(session));
         model.addAttribute("userGameStatus", userGameStatus);
-        logger.info("usergame before getting new fragment: {}", userGameStatus);
         
         // check what kind of action will be next
         Optional<Level> optLevel = Level.findByLevel(userGameStatus.getLevel());
@@ -94,14 +102,19 @@ public class GameController {
                     return "/decision/triple_options_decision :: replace_fragment";
                 case DECISION:
                     return "/decision/two_options_decision :: replace_fragment";
+                case INFO:
+                    return "/decision/simple_info :: replace_fragment";
+                case ACTION:
+                    ActionCardText actionCardText = gameCardService.getNewRandomActionCard(userGameStatus);
+                    logger.info("Will add new actionCardText to model: {}", actionCardText);
+                    model.addAttribute("actionCardText", actionCardText);
+                    return "/decision/action_card :: replace_fragment";
                 default:
                     throw new AssertionError();
             }
         } else {
             logger.warn("Couldnt resolve the level: {}", userGameStatus.getLevel());
         }
-        
-        
         
         return null;
     }

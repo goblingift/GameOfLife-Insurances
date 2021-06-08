@@ -23,14 +23,8 @@
 
         <div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <th:block th:switch="${levelType}">
-                    <div id="replace_div" th:case="INSURANCE">
-                        <div th:replace="/decision/triple_options_decision :: replace_fragment" />
-                    </div>
-                    <div id="replace_div" th:case="DECISION">
-                        <div th:replace="/decision/two_options_decision :: replace_fragment" />
-                    </div>
-                </th:block>
+                <div id="replace_div">
+                </div>
             </div>
         </div>
 

@@ -20,9 +20,12 @@ public enum Level {
 
     LEVEL_1(1, LevelType.INSURANCE),
     LEVEL_2(2, LevelType.INSURANCE),
-    LEVEL_3(3, LevelType.INSURANCE),
-    LEVEL_4(4, LevelType.INSURANCE),
-    LEVEL_5(5, LevelType.DECISION),
+    LEVEL_3(3, LevelType.ACTION),
+    LEVEL_4(4, LevelType.ACTION),
+    LEVEL_5(5, LevelType.ACTION),
+    //LEVEL_3(3, LevelType.INSURANCE),
+    //LEVEL_4(4, LevelType.INSURANCE),
+    //LEVEL_5(5, LevelType.DECISION),
     LEVEL_6(6, LevelType.ACTION),
     LEVEL_7(7, LevelType.ACTION);
 

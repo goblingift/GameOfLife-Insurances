@@ -7,8 +7,15 @@ package gift.goblin.goli.security.service;
 import gift.goblin.goli.database.model.ContractedInsurance;
 import gift.goblin.goli.database.model.User;
 import gift.goblin.goli.database.model.UserGameStatus;
+import gift.goblin.goli.database.model.actioncards.CarInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.DisabilityInsuranceActionCard;
 import gift.goblin.goli.database.repository.ContractedInsuranceRepository;
 import gift.goblin.goli.database.repository.UserGameStatusRepository;
+import gift.goblin.goli.database.repository.actioncards.CarInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.DisabilityInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.HouseholdInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.LiabilityInsuranceActionCardRepository;
+import gift.goblin.goli.dto.ActionCardText;
 import gift.goblin.goli.enumerations.Insurance;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,6 +44,24 @@ public class GameCardService {
     @Autowired
     private ContractedInsuranceRepository contractedInsuranceRepository;
 
+    @Autowired
+    CarInsuranceActionCardRepository carInsuranceActionCardRepository;
+
+    @Autowired
+    LiabilityInsuranceActionCardRepository liabilityInsuranceActionCardRepository;
+
+    @Autowired
+    DisabilityInsuranceActionCardRepository disabilityInsuranceActionCardRepository;
+
+    @Autowired
+    HouseholdInsuranceActionCardRepository householdInsuranceActionCardRepository;
+    
+    @Autowired
+    ActionCardTextConverter actionCardTextConverter;
+    
+    @Autowired
+    private CardPicker cardPicker;
+    
     
     public UserGameStatus getUserGameStatus(String username) {
         UserGameStatus userGameStatus = userGameStatusRepository.findByUsername(username);
@@ -131,5 +156,26 @@ public class GameCardService {
         return true;
     }
     
+    
+    public ActionCardText getNewRandomActionCard(UserGameStatus userGameStatus) {
+        
+        Insurance nextInsuranceType = cardPicker.getNewRandomInsurance(userGameStatus);
+        String newRandomActionCardId = cardPicker.getNewRandomActionCard(userGameStatus, nextInsuranceType);
+        
+        
+        switch (nextInsuranceType) {
+            case CAR_INSURANCE:
+                Optional<CarInsuranceActionCard> optCarInsuranceActionCard = carInsuranceActionCardRepository.findById(newRandomActionCardId);
+                return actionCardTextConverter.convertToActionCardText(optCarInsuranceActionCard.get(), userGameStatus);
+            case DISABILITY_INSURANCE:
+            Optional<DisabilityInsuranceActionCard> optDisabilityInsuranceActionCard = disabilityInsuranceActionCardRepository.findById(newRandomActionCardId);
+                return actionCardTextConverter.convertToActionCardText(optDisabilityInsuranceActionCard.get(), userGameStatus);
+            case HOUSEHOLD_INSURANCE:
+            case LIABILITY_INSURANCE:
+        }
+        
+        
+        return null;
+    }
 
 }
