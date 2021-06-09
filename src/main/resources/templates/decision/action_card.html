@@ -59,19 +59,15 @@ All rights reserved
                     e.preventDefault();
 
                     var level = $("#input_level").val();
-                    var answer = this.answer.value;
 
                     console.log("will fire ajax post with params:");
                     console.log("level=" + level);
 
                     $.post("/game/make-decision",
-                            {level: level, answer: null},
+                            {level: level, answer: 0},
                             function (response) {
 
                                 console.log("Successful submitted answer- will update UI for next card now!");
-                                $.get("/game/get-dialog").done(function (fragment) { // get from controller
-                                    $("#replace_div").replaceWith(fragment); // update snippet of page
-                                });
 
                                 // Update level counter
                                 $('#input_level').val(parseInt(level) + 1);

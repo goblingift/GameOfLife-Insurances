@@ -65,9 +65,6 @@ All rights reserved
                             function (response) {
 
                                 console.log("Successful submitted answer- will update UI for next card now!");
-                                $.get("/game/get-dialog").done(function (fragment) { // get from controller
-                                    $("#replace_div").replaceWith(fragment); // update snippet of page
-                                });
 
                                 // Update level counter
                                 $('#input_level').val(parseInt(level) + 1);

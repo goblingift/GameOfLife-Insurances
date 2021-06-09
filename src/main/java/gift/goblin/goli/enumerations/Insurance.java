@@ -53,13 +53,19 @@ public enum Insurance {
     public static Optional<Insurance> findById(int id) {
         return VALUES.stream()
                 .filter(p -> p.getId() == id)
-                .findAny();
+                .findFirst();
     }
     
     public static Optional<Insurance> findByLevel(int level) {
         return VALUES.stream()
                 .filter(p -> p.getLevel()== level)
-                .findAny();
+                .findFirst();
+    }
+    
+    public static Optional<Insurance> findByName(String name) {
+        return VALUES.stream()
+                .filter(p -> p.getName().equalsIgnoreCase(name))
+                .findFirst();
     }
     
     public int getId() {

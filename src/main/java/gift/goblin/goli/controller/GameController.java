@@ -70,6 +70,7 @@ public class GameController {
     public void submitDecision(DecisionAnswer decisionAnswer, HttpSession session, Model model) {
         
         logger.info("Called submitDecision with data: {}", decisionAnswer);
+        UserGameStatus userGameStatus = gameCardService.getUserGameStatus(getUsernameFromSession(session));
         
         Optional<Level> optLevel = Level.findByLevel(decisionAnswer.getLevel());
         if (optLevel.isEmpty()) {
@@ -79,6 +80,9 @@ public class GameController {
         // If user is currently in a level where a decision can be made, handle it
         if (optLevel.get().getLevelType() == LevelType.DECISION || optLevel.get().getLevelType() == LevelType.INSURANCE) {
             boolean handledUserDecision = gameCardService.handleUserDecision(getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
+        } else if (optLevel.get().getLevelType() == LevelType.ACTION) {
+            
+            
         }
         
         // Set player to next level

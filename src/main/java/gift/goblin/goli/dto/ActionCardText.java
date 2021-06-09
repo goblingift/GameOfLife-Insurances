@@ -17,6 +17,11 @@ public class ActionCardText {
     private String insuranceType;
     
     /**
+     * Contains the action-card id.
+     */
+    private String actionCardId;
+    
+    /**
      * Contains the damage-case description, as it was written by the card author.
      */
     private String damageCaseDescription;
@@ -40,8 +45,9 @@ public class ActionCardText {
     public ActionCardText() {
     }
 
-    public ActionCardText(String insuranceType, String damageCaseDescription, String damageCaseAdditionalDescription, double damageAmount, double damageAmountToPay) {
+    public ActionCardText(String insuranceType, String actionCardId, String damageCaseDescription, String damageCaseAdditionalDescription, double damageAmount, double damageAmountToPay) {
         this.insuranceType = insuranceType;
+        this.actionCardId = actionCardId;
         this.damageCaseDescription = damageCaseDescription;
         this.damageCaseAdditionalDescription = damageCaseAdditionalDescription;
         this.damageAmount = damageAmount;
@@ -56,6 +62,14 @@ public class ActionCardText {
         this.insuranceType = insuranceType;
     }
 
+    public String getActionCardId() {
+        return actionCardId;
+    }
+
+    public void setActionCardId(String actionCardId) {
+        this.actionCardId = actionCardId;
+    }
+    
     public String getDamageCaseDescription() {
         return damageCaseDescription;
     }
@@ -90,7 +104,7 @@ public class ActionCardText {
 
     @Override
     public String toString() {
-        return "ActionCardText{" + "insuranceType=" + insuranceType + ", damageCaseDescription=" + damageCaseDescription + ", damageCaseAdditionalDescription=" + damageCaseAdditionalDescription + ", damageAmount=" + damageAmount + ", damageAmountToPay=" + damageAmountToPay + '}';
+        return "ActionCardText{" + "insuranceType=" + insuranceType + ", actionCardId=" + actionCardId + ", damageCaseDescription=" + damageCaseDescription + ", damageCaseAdditionalDescription=" + damageCaseAdditionalDescription + ", damageAmount=" + damageAmount + ", damageAmountToPay=" + damageAmountToPay + '}';
     }
-    
+
 }

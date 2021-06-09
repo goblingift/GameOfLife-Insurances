@@ -101,7 +101,6 @@ public class CardPicker {
      * @return the id of the next action-card.
      */
     private String getNewRandomCardId(List<String> possibleActionCardIds, List<String> alreadyPickedActionCardIds) {
-
         Optional<String> optNewCard = possibleActionCardIds.stream().filter(a -> !alreadyPickedActionCardIds.contains(a)).findAny();
         if (optNewCard.isPresent()) {
             return optNewCard.get();

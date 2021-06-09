@@ -17,7 +17,7 @@ import java.util.Optional;
  * @author andre
  */
 public enum Level {
-
+    
     LEVEL_1(1, LevelType.INSURANCE),
     LEVEL_2(2, LevelType.INSURANCE),
     LEVEL_3(3, LevelType.ACTION),
@@ -33,7 +33,7 @@ public enum Level {
         this.level = level;
         this.levelType = levelType;
     }
-
+    
     private int level;
     private LevelType levelType;
 

@@ -27,10 +27,10 @@ public class UserGameStatus {
     private int level;
     private double paidForInsurances;
     private double paidForClaims;
-    // this field can contain the actual action-cards type (to prevent user from picking new one)
-    private Optional<String> actualCardInsuranceId;
+    // this field can contain the actual action-cards type (name of Insurance) (to prevent user from picking new one)
+    private String actualCardInsuranceName;
     // this field can contain the actual action-card id (to prevent user from picking new one)
-    private Optional<String> actualCardId;
+    private String actualCardId;
     @DBRef
     private List<ContractedInsurance> contractedInsurances = new ArrayList<>();
     private List<String> pickedActionCards = new ArrayList<>();
@@ -109,19 +109,19 @@ public class UserGameStatus {
         this.contractedInsurances = contractedInsurances;
     }
 
-    public Optional<String> getActualCardInsuranceId() {
-        return actualCardInsuranceId;
+    public String getActualCardInsuranceName() {
+        return actualCardInsuranceName;
     }
 
-    public void setActualCardInsuranceId(Optional<String> actualCardInsuranceId) {
-        this.actualCardInsuranceId = actualCardInsuranceId;
+    public void setActualCardInsuranceName(String actualCardInsuranceId) {
+        this.actualCardInsuranceName = actualCardInsuranceId;
     }
 
-    public Optional<String> getActualCardId() {
+    public String getActualCardId() {
         return actualCardId;
     }
 
-    public void setActualCardId(Optional<String> actualCardId) {
+    public void setActualCardId(String actualCardId) {
         this.actualCardId = actualCardId;
     }
 
@@ -180,7 +180,7 @@ public class UserGameStatus {
 
     @Override
     public String toString() {
-        return "UserGameStatus{" + "id=" + id + ", username=" + username + ", level=" + level + ", paidForInsurances=" + paidForInsurances + ", paidForClaims=" + paidForClaims + ", actualCardInsuranceId=" + actualCardInsuranceId + ", actualCardId=" + actualCardId + ", contractedInsurances=" + contractedInsurances + ", pickedActionCards=" + pickedActionCards + '}';
+        return "UserGameStatus{" + "id=" + id + ", username=" + username + ", level=" + level + ", paidForInsurances=" + paidForInsurances + ", paidForClaims=" + paidForClaims + ", actualCardInsuranceId=" + actualCardInsuranceName + ", actualCardId=" + actualCardId + ", contractedInsurances=" + contractedInsurances + ", pickedActionCards=" + pickedActionCards + '}';
     }
 
 }
