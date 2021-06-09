@@ -81,12 +81,20 @@ public class GameController {
         if (optLevel.get().getLevelType() == LevelType.DECISION || optLevel.get().getLevelType() == LevelType.INSURANCE) {
             boolean handledUserDecision = gameCardService.handleUserDecision(getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
         } else if (optLevel.get().getLevelType() == LevelType.ACTION) {
-            
-            
+            gameCardService.handleActionCard(userGameStatus);
         }
         
         // Set player to next level
         gameCardService.moveUserToNextLevel(getUsernameFromSession(session), decisionAnswer.getLevel());
+    }
+    
+    
+    @GetMapping("/new-game")
+    @ResponseBody
+    public void submitDecision(HttpSession session, Model model) {
+        logger.info("User called /new-game, will start new game in level 1.");
+        
+        gameCardService.startNewGame(getUsernameFromSession(session));
     }
     
     
@@ -122,5 +130,7 @@ public class GameController {
         
         return null;
     }
+    
+    
 
 }

@@ -20,14 +20,18 @@ public enum Level {
     
     LEVEL_1(1, LevelType.INSURANCE),
     LEVEL_2(2, LevelType.INSURANCE),
-    LEVEL_3(3, LevelType.ACTION),
-    LEVEL_4(4, LevelType.ACTION),
+    LEVEL_3(3, LevelType.INSURANCE),
+    LEVEL_4(4, LevelType.INSURANCE),
     LEVEL_5(5, LevelType.ACTION),
     //LEVEL_3(3, LevelType.INSURANCE),
     //LEVEL_4(4, LevelType.INSURANCE),
     //LEVEL_5(5, LevelType.DECISION),
     LEVEL_6(6, LevelType.ACTION),
-    LEVEL_7(7, LevelType.ACTION);
+    LEVEL_7(7, LevelType.ACTION),
+    LEVEL_8(8, LevelType.ACTION),
+    LEVEL_9(9, LevelType.ACTION),
+    LEVEL_10(10, LevelType.ACTION),
+    LEVEL_11(11, LevelType.ACTION);
 
     private Level(int level, LevelType levelType) {
         this.level = level;

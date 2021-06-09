@@ -18,12 +18,43 @@
             </ul>
 
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-success" id="btn_reset" data-toggle="modal" data-target="#modal-dialog-reset"><span class="btn-label"><i class="fas fa-reply fa-lg"></i></span> Neues Spiel</button>
+                    </div>
+                </li>
             </ul>
         </nav>
 
         <div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div id="replace_div">
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-dialog-reset" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Neues Spiel?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form_new_game" method="POST">
+                            <div class="form-group border p-1">
+                                <a>Dein Spielfortschritt zurücksetzen und neu beginnen?</a>
+                            </div>
+
+                            <div class="row">
+                                <div class="col" align="center">
+                                    <button name="submit" type="submit" class="btn btn-success" style="height: 60px; width: 50%;">Okay</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -66,6 +97,19 @@
             });
         });
 
+        $("#form_new_game").submit(function (e) {
+            console.log("User triggered new-game reset.");
+            e.preventDefault();
+
+            $.get("/game/new-game").done(function (fragment) { // get from controller
+                var level = $("#input_level").val(1);
+            });
+
+            // Adding visual box
+            $('#modal-dialog-reset').modal('hide');
+
+            return true;
+        });
 
     </script>
 </html>

@@ -118,7 +118,6 @@ public class ActionCardTextConverter {
             yearsWithLessMoney = yearsToLive;
         }
             
-
         // Get the insurance contract of the user
         User user = userRepository.findByFullname(userGameStatus.getUsername());
         Optional<ContractedInsurance> optInsurance = contractedInsuranceRepository.findByUserAndInsuranceId(user, Insurance.DISABILITY_INSURANCE.getId());
@@ -129,15 +128,21 @@ public class ActionCardTextConverter {
             damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.introduction.level.3", null, Locale.GERMANY);
             damageCaseAdditionalDescription = damageCaseAdditionalDescription.replace("{years}", String.valueOf(yearsWithLessMoney));
             
-            if (selectedChoice == 1) {
-                damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.6);
-                damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.norefund.level.3", null, Locale.GERMANY));
-            } else if (selectedChoice == 2) {
-                damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.4);
-                damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.partialrefund.level.3", null, Locale.GERMANY));
-            } else if (selectedChoice == 3) {
-                damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.1);
-                damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.fullrefund.level.3", null, Locale.GERMANY));
+            switch (selectedChoice) {
+                case 1:
+                    damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.6);
+                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.norefund.level.3", null, Locale.GERMANY));
+                    break;
+                case 2:
+                    damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.4);
+                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.partialrefund.level.3", null, Locale.GERMANY));
+                    break;
+                case 3:
+                    damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.1);
+                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.fullrefund.level.3", null, Locale.GERMANY));
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -159,8 +164,6 @@ public class ActionCardTextConverter {
             ContractedInsurance contractedInsurance = optInsurance.get();
             int selectedChoice = contractedInsurance.getSelectedChoice();
 
-            //decision.insurance.result.norefund.level.4
-            
             if (!actionCard.isCoveredByAddition() && selectedChoice >= 2) {
                 enoughInsurance = true;
                 damageAmountToPay = 0.00;

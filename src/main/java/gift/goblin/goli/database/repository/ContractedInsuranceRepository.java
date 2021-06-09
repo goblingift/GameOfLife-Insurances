@@ -6,6 +6,7 @@ package gift.goblin.goli.database.repository;
 
 import gift.goblin.goli.database.model.ContractedInsurance;
 import gift.goblin.goli.database.model.User;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -17,4 +18,5 @@ public interface ContractedInsuranceRepository extends MongoRepository<Contracte
     
     Optional<ContractedInsurance> findByUserAndInsuranceId(User user, int insuranceId);
     
+    List<ContractedInsurance> findByUser(User user);
 }
