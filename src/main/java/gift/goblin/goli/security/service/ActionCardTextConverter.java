@@ -9,8 +9,11 @@ import gift.goblin.goli.database.model.User;
 import gift.goblin.goli.database.model.UserGameStatus;
 import gift.goblin.goli.database.model.actioncards.CarInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.DisabilityInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.HomeInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.HouseholdInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.LiabilityInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.SmartphoneInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.TermLifeInsuranceActionCard;
 import gift.goblin.goli.database.repository.ContractedInsuranceRepository;
 import gift.goblin.goli.database.repository.UserRepository;
 import gift.goblin.goli.dto.ActionCardText;
@@ -63,9 +66,9 @@ public class ActionCardTextConverter {
 
         if (enoughInsurance) {
             damageAmountToPay = 0.00;
-            damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.level.1", null, Locale.GERMANY);
+            damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.CAR_INSURANCE.getId(), null, Locale.GERMANY);
         } else {
-            damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.level.1", null, Locale.GERMANY);
+            damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.CAR_INSURANCE.getId(), null, Locale.GERMANY);
         }
 
         return new ActionCardText(Insurance.CAR_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
@@ -87,17 +90,17 @@ public class ActionCardTextConverter {
 
             if (selectedChoice == 1) {
                 damageAmountToPay = actionCard.getDamageAmount();
-                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.level.2", null, Locale.GERMANY);
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.LIABILITY_INSURANCE.getId(), null, Locale.GERMANY);
             } else if (selectedChoice == 2) {
                 if (actionCard.getDamageAmount() >= 300) {
                     damageAmountToPay = 300;
                 } else {
                     damageAmountToPay = actionCard.getDamageAmount();
                 }
-                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.partialrefund.level.2", null, Locale.GERMANY);
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.partialrefund.id." + Insurance.LIABILITY_INSURANCE.getId(), null, Locale.GERMANY);
             } else if (selectedChoice == 3) {
                 damageAmountToPay = 0.00;
-                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.level.2", null, Locale.GERMANY);
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.LIABILITY_INSURANCE.getId(), null, Locale.GERMANY);
             }
         }
 
@@ -125,21 +128,21 @@ public class ActionCardTextConverter {
             ContractedInsurance contractedInsurance = optInsurance.get();
             int selectedChoice = contractedInsurance.getSelectedChoice();
             
-            damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.introduction.level.3", null, Locale.GERMANY);
+            damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.introduction.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY);
             damageCaseAdditionalDescription = damageCaseAdditionalDescription.replace("{years}", String.valueOf(yearsWithLessMoney));
             
             switch (selectedChoice) {
                 case 1:
                     damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.6);
-                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.norefund.level.3", null, Locale.GERMANY));
+                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
                     break;
                 case 2:
                     damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.4);
-                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.partialrefund.level.3", null, Locale.GERMANY));
+                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.partialrefund.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
                     break;
                 case 3:
                     damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.1);
-                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.fullrefund.level.3", null, Locale.GERMANY));
+                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
                     break;
                 default:
                     break;
@@ -167,22 +170,124 @@ public class ActionCardTextConverter {
             if (!actionCard.isCoveredByAddition() && selectedChoice >= 2) {
                 enoughInsurance = true;
                 damageAmountToPay = 0.00;
-                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.level.4", null, Locale.GERMANY);
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.HOUSEHOLD_INSURANCE.getId(), null, Locale.GERMANY);
             } else if (actionCard.isCoveredByAddition() && selectedChoice >= 3) {
                 enoughInsurance = true;
                 damageAmountToPay = 0.00;
-                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.level.4", null, Locale.GERMANY);
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.HOUSEHOLD_INSURANCE.getId(), null, Locale.GERMANY);
             } else if (actionCard.isCoveredByAddition() && selectedChoice == 2) {
                 enoughInsurance = false;
-                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.additionrequired.level.4", null, Locale.GERMANY);
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.additionrequired.id." + Insurance.HOUSEHOLD_INSURANCE.getId(), null, Locale.GERMANY);
             } else {
                 enoughInsurance = false;
-                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.level.1", null, Locale.GERMANY);
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.HOUSEHOLD_INSURANCE.getId(), null, Locale.GERMANY);
             }
         }
         
         return new ActionCardText(Insurance.HOUSEHOLD_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
                 damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
     }
+    
+    
+    public ActionCardText convertToActionCardText(HomeInsuranceActionCard actionCard, UserGameStatus userGameStatus) {
+
+        String damageCaseAdditionalDescription = "";
+        boolean enoughInsurance = false;
+        double damageAmountToPay = actionCard.getDamageAmount();
+
+        // Get the insurance contract of the user
+        User user = userRepository.findByFullname(userGameStatus.getUsername());
+        Optional<ContractedInsurance> optInsurance = contractedInsuranceRepository.findByUserAndInsuranceId(user, Insurance.HOME_INSURANCE.getId());
+        if (optInsurance.isPresent()) {
+            ContractedInsurance contractedInsurance = optInsurance.get();
+            int selectedChoice = contractedInsurance.getSelectedChoice();
+
+            if (!actionCard.isCoveredByAddition() && selectedChoice >= 2) {
+                enoughInsurance = true;
+                damageAmountToPay = 0.00;
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.HOME_INSURANCE.getId(), null, Locale.GERMANY);
+            } else if (actionCard.isCoveredByAddition() && selectedChoice >= 3) {
+                enoughInsurance = true;
+                damageAmountToPay = 0.00;
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.HOME_INSURANCE.getId(), null, Locale.GERMANY);
+            } else if (actionCard.isCoveredByAddition() && selectedChoice == 2) {
+                enoughInsurance = false;
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.additionrequired.id." + + Insurance.HOME_INSURANCE.getId(), null, Locale.GERMANY);
+            } else {
+                enoughInsurance = false;
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.HOME_INSURANCE.getId(), null, Locale.GERMANY);
+            }
+        }
+        
+        return new ActionCardText(Insurance.HOME_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+    }
+    
+        public ActionCardText convertToActionCardText(TermLifeInsuranceActionCard actionCard, UserGameStatus userGameStatus) {
+
+        String damageCaseAdditionalDescription = "";
+        double compensationPayment = 0.00;
+
+        // Get the insurance contract of the user
+        User user = userRepository.findByFullname(userGameStatus.getUsername());
+        Optional<ContractedInsurance> optInsurance = contractedInsuranceRepository.findByUserAndInsuranceId(user, Insurance.TERMLIFE_INSURANCE.getId());
+        if (optInsurance.isPresent()) {
+            ContractedInsurance contractedInsurance = optInsurance.get();
+            int selectedChoice = contractedInsurance.getSelectedChoice();
+
+            switch (selectedChoice) {
+                    case 1:
+                        compensationPayment = 0.00;
+                        damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.TERMLIFE_INSURANCE.getId(), null, Locale.GERMANY);
+                        break;
+                    case 2:
+                        compensationPayment = -250_000;
+                        damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.partialrefund.id." + Insurance.TERMLIFE_INSURANCE.getId(), null, Locale.GERMANY);
+                        break;
+                    case 3:
+                        compensationPayment = -500_000;
+                        damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.TERMLIFE_INSURANCE.getId(), null, Locale.GERMANY);
+                        break;
+            }
+        }
+        
+        return new ActionCardText(Insurance.HOME_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
+                damageCaseAdditionalDescription, compensationPayment, compensationPayment);
+    }
+    
+    public ActionCardText convertToActionCardText(SmartphoneInsuranceActionCard actionCard, UserGameStatus userGameStatus) {
+
+        String damageCaseAdditionalDescription = "";
+        boolean enoughInsurance = false;
+        double damageAmountToPay = actionCard.getDamageAmount();
+
+        // Get the insurance contract of the user
+        User user = userRepository.findByFullname(userGameStatus.getUsername());
+        Optional<ContractedInsurance> optInsurance = contractedInsuranceRepository.findByUserAndInsuranceId(user, Insurance.SMARTPHONE_INSURANCE.getId());
+        if (optInsurance.isPresent()) {
+            ContractedInsurance contractedInsurance = optInsurance.get();
+            int selectedChoice = contractedInsurance.getSelectedChoice();
+
+            if (!actionCard.isCoveredByAddition() && selectedChoice >= 2) {
+                enoughInsurance = true;
+                damageAmountToPay = 0.00;
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.SMARTPHONE_INSURANCE.getId(), null, Locale.GERMANY);
+            } else if (actionCard.isCoveredByAddition() && selectedChoice >= 3) {
+                enoughInsurance = true;
+                damageAmountToPay = 0.00;
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.SMARTPHONE_INSURANCE.getId(), null, Locale.GERMANY);
+            } else if (actionCard.isCoveredByAddition() && selectedChoice == 2) {
+                enoughInsurance = false;
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.additionrequired.id." + Insurance.SMARTPHONE_INSURANCE.getId(), null, Locale.GERMANY);
+            } else {
+                enoughInsurance = false;
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.SMARTPHONE_INSURANCE.getId(), null, Locale.GERMANY);
+            }
+        }
+        
+        return new ActionCardText(Insurance.SMARTPHONE_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+    }
+    
 
 }

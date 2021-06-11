@@ -19,19 +19,28 @@ import java.util.Optional;
 public enum Level {
     
     LEVEL_1(1, LevelType.INSURANCE),
-    LEVEL_2(2, LevelType.INSURANCE),
+    LEVEL_2(2, LevelType.ACTION),
     LEVEL_3(3, LevelType.INSURANCE),
     LEVEL_4(4, LevelType.INSURANCE),
-    LEVEL_5(5, LevelType.ACTION),
-    //LEVEL_3(3, LevelType.INSURANCE),
-    //LEVEL_4(4, LevelType.INSURANCE),
-    //LEVEL_5(5, LevelType.DECISION),
+    LEVEL_5(5, LevelType.INSURANCE),
     LEVEL_6(6, LevelType.ACTION),
     LEVEL_7(7, LevelType.ACTION),
-    LEVEL_8(8, LevelType.ACTION),
+    LEVEL_8(8, LevelType.INSURANCE),
     LEVEL_9(9, LevelType.ACTION),
     LEVEL_10(10, LevelType.ACTION),
-    LEVEL_11(11, LevelType.ACTION);
+    LEVEL_11(11, LevelType.ACTION),
+    LEVEL_12(12, LevelType.ACTION),
+    LEVEL_13(13, LevelType.ACTION),
+    LEVEL_14(14, LevelType.ACTION),
+    LEVEL_15(15, LevelType.ACTION),
+    LEVEL_16(16, LevelType.ACTION),
+    LEVEL_17(17, LevelType.ACTION),
+    LEVEL_18(18, LevelType.INSURANCE),
+    LEVEL_19(19, LevelType.ACTION),
+    LEVEL_20(20, LevelType.ACTION),
+    LEVEL_21(21, LevelType.ACTION),
+    LEVEL_22(22, LevelType.INSURANCE),
+    LEVEL_23(23, LevelType.ACTION);
 
     private Level(int level, LevelType levelType) {
         this.level = level;

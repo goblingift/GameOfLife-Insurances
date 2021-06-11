@@ -9,17 +9,24 @@ import gift.goblin.goli.database.model.User;
 import gift.goblin.goli.database.model.UserGameStatus;
 import gift.goblin.goli.database.model.actioncards.CarInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.DisabilityInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.HomeInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.HouseholdInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.LiabilityInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.SmartphoneInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.TermLifeInsuranceActionCard;
 import gift.goblin.goli.database.repository.ContractedInsuranceRepository;
 import gift.goblin.goli.database.repository.UserGameStatusRepository;
 import gift.goblin.goli.database.repository.UserRepository;
 import gift.goblin.goli.database.repository.actioncards.CarInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.DisabilityInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.HomeInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.HouseholdInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.LiabilityInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.SmartphoneInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.TermLifeInsuranceActionCardRepository;
 import gift.goblin.goli.dto.ActionCardText;
 import gift.goblin.goli.enumerations.Insurance;
+import gift.goblin.goli.enumerations.Level;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,8 +58,17 @@ public class GameCardService {
     private ContractedInsuranceRepository contractedInsuranceRepository;
 
     @Autowired
+    SmartphoneInsuranceActionCardRepository smartphoneInsuranceActionCardRepository;
+    
+    @Autowired
+    HomeInsuranceActionCardRepository homeInsuranceActionCardRepository;
+    
+    @Autowired
     CarInsuranceActionCardRepository carInsuranceActionCardRepository;
 
+    @Autowired
+    TermLifeInsuranceActionCardRepository termLifeInsuranceActionCardRepository;
+    
     @Autowired
     LiabilityInsuranceActionCardRepository liabilityInsuranceActionCardRepository;
 
@@ -185,6 +201,15 @@ public class GameCardService {
                 case HOUSEHOLD_INSURANCE:
                     handleHouseholdInsuranceActionCard(actualCardId, userGameStatus);
                     break;
+                case SMARTPHONE_INSURANCE:
+                    handleSmartphoneInsuranceActionCard(actualCardId, userGameStatus);
+                    break;
+                case HOME_INSURANCE:
+                    handleHomeInsuranceActionCard(actualCardId, userGameStatus);
+                    break;
+                case TERMLIFE_INSURANCE:
+                    handleTermLifeInsuranceActionCard(actualCardId, userGameStatus);
+                    break;
             }
             
         } else {
@@ -252,6 +277,54 @@ public class GameCardService {
         userGameStatusRepository.save(userGameStatus);
     }
     
+    private void handleHomeInsuranceActionCard(String actionCardId, UserGameStatus userGameStatus) {
+        
+        Optional<HomeInsuranceActionCard> optActionCard = homeInsuranceActionCardRepository.findById(actionCardId);
+        if (optActionCard.isEmpty()) {
+            logger.warn("Couldnt find the given actioncard by id: {}", actionCardId);
+            return;
+        }
+        
+        ActionCardText actionCardText = actionCardTextConverter.convertToActionCardText(optActionCard.get(), userGameStatus);
+        
+        logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
+        userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatusRepository.save(userGameStatus);
+    }
+    
+    private void handleSmartphoneInsuranceActionCard(String actionCardId, UserGameStatus userGameStatus) {
+        
+        Optional<SmartphoneInsuranceActionCard> optActionCard = smartphoneInsuranceActionCardRepository.findById(actionCardId);
+        if (optActionCard.isEmpty()) {
+            logger.warn("Couldnt find the given actioncard by id: {}", actionCardId);
+            return;
+        }
+        
+        ActionCardText actionCardText = actionCardTextConverter.convertToActionCardText(optActionCard.get(), userGameStatus);
+        
+        logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
+        userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatusRepository.save(userGameStatus);
+    }
+    
+    private void handleTermLifeInsuranceActionCard(String actionCardId, UserGameStatus userGameStatus) {
+        
+        Optional<TermLifeInsuranceActionCard> optActionCard = termLifeInsuranceActionCardRepository.findById(actionCardId);
+        if (optActionCard.isEmpty()) {
+            logger.warn("Couldnt find the given actioncard by id: {}", actionCardId);
+            return;
+        }
+        
+        ActionCardText actionCardText = actionCardTextConverter.convertToActionCardText(optActionCard.get(), userGameStatus);
+        
+        logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
+        userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        
+        // Game over- set player to last level
+        userGameStatus.setLevel(Level.getSIZE());
+        userGameStatusRepository.save(userGameStatus);
+    }
+    
     /**
      * Moves the user to next level.
      * @param username the username.
@@ -288,6 +361,21 @@ public class GameCardService {
         return true;
     }
     
+    /**
+     * Gets the insurance by the given level-id and will add it as current card into UserGameStatus object.
+     * @param userGameStatus the users game status object.
+     * @param level the level where the user is.
+     * @return the usergame status object, enriched with the insurance-id as currently selected card.
+     */
+    public UserGameStatus addInsuranceToUserGameStatus(UserGameStatus userGameStatus, int level) {
+        
+        Insurance insurance = Insurance.findByLevel(level).get();
+        
+        userGameStatus.setActualCardId(String.valueOf(insurance.getId()));
+        userGameStatus.setActualCardInsuranceName(insurance.getName());
+        userGameStatusRepository.save(userGameStatus);
+        return userGameStatus;
+    }
     
     public ActionCardText getNewRandomActionCard(UserGameStatus userGameStatus) {
         
@@ -307,6 +395,10 @@ public class GameCardService {
         }
         
         switch (nextInsuranceType) {
+            case SMARTPHONE_INSURANCE:
+                Optional<SmartphoneInsuranceActionCard> optSmartphoneInsuranceActionCard = smartphoneInsuranceActionCardRepository.findById(newRandomActionCardId);
+                returnValue = actionCardTextConverter.convertToActionCardText(optSmartphoneInsuranceActionCard.get(), userGameStatus);
+                break;
             case CAR_INSURANCE:
                 Optional<CarInsuranceActionCard> optCarInsuranceActionCard = carInsuranceActionCardRepository.findById(newRandomActionCardId);
                 returnValue = actionCardTextConverter.convertToActionCardText(optCarInsuranceActionCard.get(), userGameStatus);
@@ -322,6 +414,10 @@ public class GameCardService {
             case LIABILITY_INSURANCE:
                 Optional<LiabilityInsuranceActionCard> optLiabilityInsuranceActionCard = liabilityInsuranceActionCardRepository.findById(newRandomActionCardId);
                 returnValue = actionCardTextConverter.convertToActionCardText(optLiabilityInsuranceActionCard.get(), userGameStatus);
+                break;
+            case HOME_INSURANCE:
+                Optional<HomeInsuranceActionCard> optHomeInsuranceActionCard = homeInsuranceActionCardRepository.findById(newRandomActionCardId);
+                returnValue = actionCardTextConverter.convertToActionCardText(optHomeInsuranceActionCard.get(), userGameStatus);
                 break;
         }
         

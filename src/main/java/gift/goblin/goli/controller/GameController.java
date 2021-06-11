@@ -8,6 +8,7 @@ import gift.goblin.goli.WebSecurityConfig;
 import gift.goblin.goli.database.model.UserGameStatus;
 import gift.goblin.goli.dto.ActionCardText;
 import gift.goblin.goli.dto.DecisionAnswer;
+import gift.goblin.goli.enumerations.Insurance;
 import gift.goblin.goli.enumerations.Level;
 import gift.goblin.goli.enumerations.LevelType;
 import gift.goblin.goli.security.service.GameCardService;
@@ -91,7 +92,7 @@ public class GameController {
     
     @GetMapping("/new-game")
     @ResponseBody
-    public void submitDecision(HttpSession session, Model model) {
+    public void startNewGame(HttpSession session, Model model) {
         logger.info("User called /new-game, will start new game in level 1.");
         
         gameCardService.startNewGame(getUsernameFromSession(session));
@@ -111,6 +112,8 @@ public class GameController {
             LevelType nextLevelType = optLevel.get().getLevelType();
             switch (nextLevelType) {
                 case INSURANCE:
+                    userGameStatus = gameCardService.addInsuranceToUserGameStatus(userGameStatus, optLevel.get().getLevel());
+                    model.addAttribute("userGameStatus", userGameStatus);
                     return "/decision/triple_options_decision :: replace_fragment";
                 case DECISION:
                     return "/decision/two_options_decision :: replace_fragment";

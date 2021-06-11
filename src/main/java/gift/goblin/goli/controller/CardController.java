@@ -6,12 +6,18 @@ package gift.goblin.goli.controller;
 
 import gift.goblin.goli.database.model.actioncards.CarInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.DisabilityInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.HomeInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.HouseholdInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.LiabilityInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.SmartphoneInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.TermLifeInsuranceActionCard;
 import gift.goblin.goli.database.repository.actioncards.CarInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.DisabilityInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.HomeInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.HouseholdInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.LiabilityInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.SmartphoneInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.TermLifeInsuranceActionCardRepository;
 import gift.goblin.goli.dto.InsuranceSelection;
 import gift.goblin.goli.enumerations.Insurance;
 import java.util.Map;
@@ -50,9 +56,18 @@ public class CardController {
 
     @Autowired
     DisabilityInsuranceActionCardRepository disabilityInsuranceActionCardRepository;
-    
+
     @Autowired
     HouseholdInsuranceActionCardRepository householdInsuranceActionCardRepository;
+
+    @Autowired
+    SmartphoneInsuranceActionCardRepository smartphoneInsuranceActionCardRepository;
+
+    @Autowired
+    HomeInsuranceActionCardRepository homeInsuranceActionCardRepository;
+    
+    @Autowired
+    TermLifeInsuranceActionCardRepository termLifeInsuranceActionCardRepository;
 
     @GetMapping(value = {"/create"})
     public String renderCreateCard(Model model) {
@@ -123,6 +138,42 @@ public class CardController {
         }
     }
 
+    @PostMapping(value = {"/add/smartphone-insurance"})
+    public String createActionCardSmartphoneInsurance(SmartphoneInsuranceActionCard actionCard, BindingResult bindingResult, Model model) {
+
+        logger.info("Create new actioncard for a disability-insurance: {}", actionCard);
+        actionCard.setId(UUID.randomUUID().toString());
+        SmartphoneInsuranceActionCard savedActionCard = smartphoneInsuranceActionCardRepository.save(actionCard);
+        logger.info("Successful created new actionCard in database: {}", savedActionCard);
+
+        model.addAttribute("display_success", true);
+        return renderCreateCard(model);
+    }
+
+    @PostMapping(value = {"/add/home-insurance"})
+    public String createActionCardHomeInsurance(HomeInsuranceActionCard actionCard, BindingResult bindingResult, Model model) {
+
+        logger.info("Create new actioncard for a home-insurance: {}", actionCard);
+        actionCard.setId(UUID.randomUUID().toString());
+        HomeInsuranceActionCard savedActionCard = homeInsuranceActionCardRepository.save(actionCard);
+        logger.info("Successful created new actionCard in database: {}", savedActionCard);
+
+        model.addAttribute("display_success", true);
+        return renderCreateCard(model);
+    }
+
+    @PostMapping(value = {"/add/termlife-insurance"})
+    public String createActionCardTermLifeInsurance(TermLifeInsuranceActionCard actionCard, BindingResult bindingResult, Model model) {
+
+        logger.info("Create new actioncard for a termlife-insurance: {}", actionCard);
+        actionCard.setId(UUID.randomUUID().toString());
+        TermLifeInsuranceActionCard savedActionCard = termLifeInsuranceActionCardRepository.save(actionCard);
+        logger.info("Successful created new actionCard in database: {}", savedActionCard);
+
+        model.addAttribute("display_success", true);
+        return renderCreateCard(model);
+    }
+
     /**
      * Action method which will get triggered if the user selected car-insurance
      * and submitted form.
@@ -180,7 +231,7 @@ public class CardController {
     @PostMapping(value = {"/add/household-insurance"})
     public String createActionCardHouseholdInsurance(HouseholdInsuranceActionCard actionCard, BindingResult bindingResult, Model model) {
 
-        logger.info("Create new actioncard for a disability-insurance: {}", actionCard);
+        logger.info("Create new actioncard for a household-insurance: {}", actionCard);
         actionCard.setId(UUID.randomUUID().toString());
         HouseholdInsuranceActionCard savedActionCard = householdInsuranceActionCardRepository.save(actionCard);
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
