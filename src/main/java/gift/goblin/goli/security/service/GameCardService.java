@@ -179,8 +179,9 @@ public class GameCardService {
     /**
      * Will handle the currently active action-card for the user.
      * @param userGameStatus will be used to get the current action-card of user.
+     * @return true if everything is fine and game continues. False if game ends (Player died e.g.).
      */
-    public void handleActionCard(UserGameStatus userGameStatus) {
+    public boolean handleActionCard(UserGameStatus userGameStatus) {
         
         String actualCardId = userGameStatus.getActualCardId();
         String actualCardInsuranceId = userGameStatus.getActualCardInsuranceName();
@@ -191,31 +192,33 @@ public class GameCardService {
             switch(optInsurance.get()) {
                 case CAR_INSURANCE:
                     handleCarInsuranceActionCard(actualCardId, userGameStatus);
-                    break;
+                    return true;
                 case LIABILITY_INSURANCE:
                     handleLiabilityInsuranceActionCard(actualCardId, userGameStatus);
-                    break;
+                    return true;
                 case DISABILITY_INSURANCE:
                     handleDisabilityInsuranceActionCard(actualCardId, userGameStatus);
-                    break;
+                    return true;
                 case HOUSEHOLD_INSURANCE:
                     handleHouseholdInsuranceActionCard(actualCardId, userGameStatus);
-                    break;
+                    return true;
                 case SMARTPHONE_INSURANCE:
                     handleSmartphoneInsuranceActionCard(actualCardId, userGameStatus);
-                    break;
+                    return true;
                 case HOME_INSURANCE:
                     handleHomeInsuranceActionCard(actualCardId, userGameStatus);
-                    break;
+                    return true;
                 case TERMLIFE_INSURANCE:
                     handleTermLifeInsuranceActionCard(actualCardId, userGameStatus);
-                    break;
+                    return false;
             }
             
         } else {
             logger.warn("No action-card is active, something went wrong! Skip handling action-card for user: {}", userGameStatus);
+            return true;
         }
         
+        return true;
     }
     
     private void handleCarInsuranceActionCard(String actionCardId, UserGameStatus userGameStatus) {
@@ -321,6 +324,7 @@ public class GameCardService {
         userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
         
         // Game over- set player to last level
+        logger.info("User {} died - set em to last level.", userGameStatus.getUsername());
         userGameStatus.setLevel(Level.getSIZE());
         userGameStatusRepository.save(userGameStatus);
     }
@@ -394,6 +398,13 @@ public class GameCardService {
             pickedNewRandomCard = true;
         }
         
+        // Fake random card
+        if (userGameStatus.getLevel() > 22) {
+            nextInsuranceType = Insurance.TERMLIFE_INSURANCE;
+            newRandomActionCardId = cardPicker.getNewRandomActionCard(userGameStatus, nextInsuranceType);
+        }
+        
+        
         switch (nextInsuranceType) {
             case SMARTPHONE_INSURANCE:
                 Optional<SmartphoneInsuranceActionCard> optSmartphoneInsuranceActionCard = smartphoneInsuranceActionCardRepository.findById(newRandomActionCardId);
@@ -418,6 +429,10 @@ public class GameCardService {
             case HOME_INSURANCE:
                 Optional<HomeInsuranceActionCard> optHomeInsuranceActionCard = homeInsuranceActionCardRepository.findById(newRandomActionCardId);
                 returnValue = actionCardTextConverter.convertToActionCardText(optHomeInsuranceActionCard.get(), userGameStatus);
+                break;
+            case TERMLIFE_INSURANCE:
+                Optional<TermLifeInsuranceActionCard> optTermLifeInsuranceActionCard = termLifeInsuranceActionCardRepository.findById(newRandomActionCardId);
+                returnValue = actionCardTextConverter.convertToActionCardText(optTermLifeInsuranceActionCard.get(), userGameStatus);
                 break;
         }
         

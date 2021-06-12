@@ -11,6 +11,7 @@ import gift.goblin.goli.database.repository.actioncards.HomeInsuranceActionCardR
 import gift.goblin.goli.database.repository.actioncards.HouseholdInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.LiabilityInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.SmartphoneInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.TermLifeInsuranceActionCardRepository;
 import gift.goblin.goli.enumerations.Insurance;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,9 @@ public class CardPicker {
     
     @Autowired
     HomeInsuranceActionCardRepository homeInsuranceActionCardRepository;
+    
+    @Autowired
+    TermLifeInsuranceActionCardRepository termLifeInsuranceActionCardRepository;
     
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -96,6 +100,8 @@ public class CardPicker {
                 return getNewRandomCardId(smartphoneInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
             case HOME_INSURANCE:
                 return getNewRandomCardId(homeInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+            case TERMLIFE_INSURANCE:
+                return getNewRandomCardId(termLifeInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
         }
 
         logger.error("Unknown insurance-type given: {}", insurance);

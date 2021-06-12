@@ -7,41 +7,57 @@ package gift.goblin.goli.dto;
 /**
  * This class contains all fields which are required to render an action-card,
  * which were picked by a player.
+ *
  * @author andre
  */
 public class ActionCardText {
-    
+
     /**
      * Contains the insurance-type as readable text, like "KFZ-Versicherung".
      */
     private String insuranceType;
-    
+
     /**
      * Contains the action-card id.
      */
     private String actionCardId;
-    
+
     /**
-     * Contains the damage-case description, as it was written by the card author.
+     * Contains the damage-case description, as it was written by the card
+     * author.
      */
     private String damageCaseDescription;
-    
+
     /**
-     * Contains additional information about this damage-case, e.g. if your insurance
-     * will pay the damage or not.
+     * Contains additional information about this damage-case, e.g. if your
+     * insurance will pay the damage or not.
      */
     private String damageCaseAdditionalDescription;
-    
+
     /**
      * Contains the original damage amount, as defined by card author.
      */
     private double damageAmount;
-    
+
     /**
-     * The amount of money, which the player has to pay. Will be zero, if he has a good insurance.
+     * The amount of money, which the player has to pay. Will be zero, if he has
+     * a good insurance.
      */
     private double damageAmountToPay;
 
+    /**
+     * This field can be filled with a specific property key, to display
+     * different title for the damage amount sum label
+     */
+    private String differentTextDamageAmountSum;
+
+    /**
+     * This field can be filled with a specific property key, to display
+     * different title for the damage amount sum label
+     */
+    private String differentTextDamageAmount;
+
+    
     public ActionCardText() {
     }
 
@@ -69,7 +85,7 @@ public class ActionCardText {
     public void setActionCardId(String actionCardId) {
         this.actionCardId = actionCardId;
     }
-    
+
     public String getDamageCaseDescription() {
         return damageCaseDescription;
     }
@@ -102,9 +118,25 @@ public class ActionCardText {
         this.damageAmountToPay = damageAmountToPay;
     }
 
+    public String getDifferentTextDamageAmountSum() {
+        return differentTextDamageAmountSum;
+    }
+
+    public void setDifferentTextDamageAmountSum(String differentTextDamageAmountSum) {
+        this.differentTextDamageAmountSum = differentTextDamageAmountSum;
+    }
+
+    public String getDifferentTextDamageAmount() {
+        return differentTextDamageAmount;
+    }
+
+    public void setDifferentTextDamageAmount(String differentTextDamageAmount) {
+        this.differentTextDamageAmount = differentTextDamageAmount;
+    }
+    
     @Override
     public String toString() {
-        return "ActionCardText{" + "insuranceType=" + insuranceType + ", actionCardId=" + actionCardId + ", damageCaseDescription=" + damageCaseDescription + ", damageCaseAdditionalDescription=" + damageCaseAdditionalDescription + ", damageAmount=" + damageAmount + ", damageAmountToPay=" + damageAmountToPay + '}';
+        return "ActionCardText{" + "insuranceType=" + insuranceType + ", actionCardId=" + actionCardId + ", damageCaseDescription=" + damageCaseDescription + ", damageCaseAdditionalDescription=" + damageCaseAdditionalDescription + ", damageAmount=" + damageAmount + ", damageAmountToPay=" + damageAmountToPay + ", differentTextDamageAmountSum=" + differentTextDamageAmountSum + ", differentTextDamageAmount=" + differentTextDamageAmount + '}';
     }
 
 }

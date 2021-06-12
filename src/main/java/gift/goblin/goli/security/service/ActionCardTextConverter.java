@@ -134,23 +134,26 @@ public class ActionCardTextConverter {
             switch (selectedChoice) {
                 case 1:
                     damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.6);
-                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
+                    damageCaseAdditionalDescription = damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
                     break;
                 case 2:
                     damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.4);
-                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.partialrefund.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
+                    damageCaseAdditionalDescription = damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.partialrefund.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
                     break;
                 case 3:
                     damageAmountToPay = yearsWithLessMoney * (averageYearlyIncomeGermany2020 * 0.1);
-                    damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
+                    damageCaseAdditionalDescription = damageCaseAdditionalDescription.concat(messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
                     break;
                 default:
                     break;
             }
         }
 
-        return new ActionCardText(Insurance.DISABILITY_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
+        ActionCardText actionCardText = new ActionCardText(Insurance.DISABILITY_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
                 damageCaseAdditionalDescription, (yearsWithLessMoney * averageYearlyIncomeGermany2020) * 0.6, damageAmountToPay);
+        actionCardText.setDifferentTextDamageAmountSum(messageSource.getMessage("decision.insurance.result.label.damagesum.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
+        actionCardText.setDifferentTextDamageAmount(messageSource.getMessage("decision.insurance.result.label.damage.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
+        return actionCardText;
     }
     
     
@@ -241,18 +244,20 @@ public class ActionCardTextConverter {
                         damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.TERMLIFE_INSURANCE.getId(), null, Locale.GERMANY);
                         break;
                     case 2:
-                        compensationPayment = -250_000;
+                        compensationPayment = 250_000;
                         damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.partialrefund.id." + Insurance.TERMLIFE_INSURANCE.getId(), null, Locale.GERMANY);
                         break;
                     case 3:
-                        compensationPayment = -500_000;
+                        compensationPayment = 500_000;
                         damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.TERMLIFE_INSURANCE.getId(), null, Locale.GERMANY);
                         break;
             }
         }
         
-        return new ActionCardText(Insurance.HOME_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, compensationPayment, compensationPayment);
+        ActionCardText actionCardText = new ActionCardText(Insurance.TERMLIFE_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
+                damageCaseAdditionalDescription, 0.00, compensationPayment);
+        actionCardText.setDifferentTextDamageAmount(messageSource.getMessage("decision.insurance.result.label.damage.id." + Insurance.TERMLIFE_INSURANCE.getId(), null, Locale.GERMANY));
+        return actionCardText;
     }
     
     public ActionCardText convertToActionCardText(SmartphoneInsuranceActionCard actionCard, UserGameStatus userGameStatus) {

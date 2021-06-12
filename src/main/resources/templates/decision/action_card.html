@@ -23,9 +23,14 @@ All rights reserved
                         <a th:text="${actionCardText.damageCaseAdditionalDescription}" />
                     </div>
 
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-3" th:if="${actionCardText.damageAmount > 0.00}">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">Versicherungsschaden:</span>
+
+                            <span class="input-group-text">
+                                <a th:if="${actionCardText.differentTextDamageAmountSum != null} or ${actionCardText.differentTextDamageAmountSum != ''}" th:text="${actionCardText.differentTextDamageAmountSum}" />
+                                <a th:if="${actionCardText.differentTextDamageAmountSum == null} or ${actionCardText.differentTextDamageAmountSum == ''}">Versicherungsschaden:</a>
+                            </span>
+
                         </div>
                         <input type="text" class="form-control" readonly th:value="${actionCardText.damageAmount}">
                             <div class="input-group-append">
@@ -35,7 +40,12 @@ All rights reserved
 
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text">Eigenanteil:</span>
+
+                            <span class="input-group-text">
+                                <a th:if="${actionCardText.differentTextDamageAmount != null} or ${actionCardText.differentTextDamageAmount != ''}" th:text="${actionCardText.differentTextDamageAmount}" />
+                                <a th:if="${actionCardText.differentTextDamageAmount == null} or ${actionCardText.differentTextDamageAmount == ''}">Eigenanteil:</a>
+                            </span>
+
                         </div>
                         <input type="text" class="form-control" readonly th:value="${actionCardText.damageAmountToPay}">
                             <div class="input-group-append">
@@ -67,10 +77,17 @@ All rights reserved
                             {level: level, answer: 0},
                             function (response) {
 
-                                console.log("Successful submitted answer- will update UI for next card now!");
-
-                                // Update level counter
-                                $('#input_level').val(parseInt(level) + 1);
+                                if (response) {
+                                    console.log("Successful submitted answer- set user to next level!");
+                                    
+                                } else {
+                                    console.log("Game over- set user to last level!");
+                                    $.get('/game/last-level',
+                                            function (data) {
+                                                console.log("Set user to last-level: " + data);
+                                                $('#input_level').val(data);
+                                            });
+                                }
                             }
                     );
 

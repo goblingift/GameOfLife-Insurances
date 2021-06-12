@@ -40,7 +40,11 @@ public enum Level {
     LEVEL_20(20, LevelType.ACTION),
     LEVEL_21(21, LevelType.ACTION),
     LEVEL_22(22, LevelType.INSURANCE),
-    LEVEL_23(23, LevelType.ACTION);
+    LEVEL_23(23, LevelType.ACTION),
+    LEVEL_24(24, LevelType.ACTION),
+    LEVEL_25(25, LevelType.ACTION),
+    LEVEL_26(26, LevelType.ACTION),
+    LEVEL_27(27, LevelType.ACTION);
 
     private Level(int level, LevelType levelType) {
         this.level = level;

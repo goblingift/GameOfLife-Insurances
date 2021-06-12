@@ -68,25 +68,36 @@ public class GameController {
 
     @PostMapping("/make-decision")
     @ResponseBody
-    public void submitDecision(DecisionAnswer decisionAnswer, HttpSession session, Model model) {
+    public boolean submitDecision(DecisionAnswer decisionAnswer, HttpSession session, Model model) {
         
         logger.info("Called submitDecision with data: {}", decisionAnswer);
         UserGameStatus userGameStatus = gameCardService.getUserGameStatus(getUsernameFromSession(session));
+        boolean gameContinues = true;
         
         Optional<Level> optLevel = Level.findByLevel(decisionAnswer.getLevel());
         if (optLevel.isEmpty()) {
             logger.warn("User tried to make decision for unknown level: {}", decisionAnswer.getLevel());
-            return;
+            return gameContinues;
         }
         // If user is currently in a level where a decision can be made, handle it
         if (optLevel.get().getLevelType() == LevelType.DECISION || optLevel.get().getLevelType() == LevelType.INSURANCE) {
             boolean handledUserDecision = gameCardService.handleUserDecision(getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
         } else if (optLevel.get().getLevelType() == LevelType.ACTION) {
-            gameCardService.handleActionCard(userGameStatus);
+            gameContinues = gameCardService.handleActionCard(userGameStatus);
         }
         
         // Set player to next level
-        gameCardService.moveUserToNextLevel(getUsernameFromSession(session), decisionAnswer.getLevel());
+        if (gameContinues) {
+            gameCardService.moveUserToNextLevel(getUsernameFromSession(session), decisionAnswer.getLevel());
+        }
+        
+        return gameContinues;
+    }
+    
+    @GetMapping("/last-level")
+    @ResponseBody
+    public int getLastLevel(HttpSession session, Model model) {
+        return Level.getSIZE();
     }
     
     
