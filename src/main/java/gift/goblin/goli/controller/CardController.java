@@ -8,14 +8,18 @@ import gift.goblin.goli.database.model.actioncards.CarInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.DisabilityInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.HomeInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.HouseholdInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.LegalProtectionInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.LiabilityInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.SeniorAccidentInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.SmartphoneInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.TermLifeInsuranceActionCard;
 import gift.goblin.goli.database.repository.actioncards.CarInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.DisabilityInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.HomeInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.HouseholdInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.LegalProtectionInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.LiabilityInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.SeniorAccidentInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.SmartphoneInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.TermLifeInsuranceActionCardRepository;
 import gift.goblin.goli.dto.InsuranceSelection;
@@ -65,9 +69,15 @@ public class CardController {
 
     @Autowired
     HomeInsuranceActionCardRepository homeInsuranceActionCardRepository;
-    
+
     @Autowired
     TermLifeInsuranceActionCardRepository termLifeInsuranceActionCardRepository;
+
+    @Autowired
+    SeniorAccidentInsuranceActionCardRepository seniorAccidentInsuranceActionCardRepository;
+
+    @Autowired
+    LegalProtectionInsuranceActionCardRepository legalProtectionInsuranceActionCardRepository;
 
     @GetMapping(value = {"/create"})
     public String renderCreateCard(Model model) {
@@ -168,6 +178,30 @@ public class CardController {
         logger.info("Create new actioncard for a termlife-insurance: {}", actionCard);
         actionCard.setId(UUID.randomUUID().toString());
         TermLifeInsuranceActionCard savedActionCard = termLifeInsuranceActionCardRepository.save(actionCard);
+        logger.info("Successful created new actionCard in database: {}", savedActionCard);
+
+        model.addAttribute("display_success", true);
+        return renderCreateCard(model);
+    }
+
+    @PostMapping(value = {"/add/senioraccident-insurance"})
+    public String createActionCardSeniorAccidentInsurance(SeniorAccidentInsuranceActionCard actionCard, BindingResult bindingResult, Model model) {
+
+        logger.info("Create new actioncard for a senioraccident-insurance: {}", actionCard);
+        actionCard.setId(UUID.randomUUID().toString());
+        SeniorAccidentInsuranceActionCard savedActionCard = seniorAccidentInsuranceActionCardRepository.save(actionCard);
+        logger.info("Successful created new actionCard in database: {}", savedActionCard);
+
+        model.addAttribute("display_success", true);
+        return renderCreateCard(model);
+    }
+
+    @PostMapping(value = {"/add/legalprotection-insurance"})
+    public String createActionCardLegalProtectionInsurance(LegalProtectionInsuranceActionCard actionCard, BindingResult bindingResult, Model model) {
+
+        logger.info("Create new actioncard for a legalprotection-insurance: {}", actionCard);
+        actionCard.setId(UUID.randomUUID().toString());
+        LegalProtectionInsuranceActionCard savedActionCard = legalProtectionInsuranceActionCardRepository.save(actionCard);
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);

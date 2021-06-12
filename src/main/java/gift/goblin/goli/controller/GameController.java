@@ -125,7 +125,11 @@ public class GameController {
                 case INSURANCE:
                     userGameStatus = gameCardService.addInsuranceToUserGameStatus(userGameStatus, optLevel.get().getLevel());
                     model.addAttribute("userGameStatus", userGameStatus);
-                    return "/decision/triple_options_decision :: replace_fragment";
+                    if (userGameStatus.getActualCardInsuranceName() == Insurance.LEGALPROTECTION_INSURANCE.getName()) {
+                        return "/decision/four_options_decision :: replace_fragment";
+                    } else {
+                        return "/decision/triple_options_decision :: replace_fragment";
+                    }
                 case DECISION:
                     return "/decision/two_options_decision :: replace_fragment";
                 case INFO:

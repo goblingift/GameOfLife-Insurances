@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2021 Andre Kessler (https://github.com/goblingift)
+All rights reserved
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="replace_fragment">
+        <div id="replace_div">
+            <form method="POST" th:action="${actionUrl}" id="frm_new_actioncard">
+                <input type="hidden" name="insuranceId" th:value="${insuranceId}">
+                <div class="form-group">
+                    <a class="text-headline">Fragestellung:</a> 
+                    <textarea id="textarea" name="text" cols="40" rows="5" required="required" class="form-control"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <a class="text-headline">Schadenssumme in Euro:</a> 
+                    <input id="input_damageAmount" type="number" step="0.01" name="damageAmount" required="required" class="form-control">
+                </div>
+
+                <div>
+                    <a class="text-headline">Welcher Versicherungsbereich deckt den Schaden ab?:</a>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chk_answer_1" name="coveredByPrivateInsurance">
+                        <label class="form-check-label" for="chk_answer_1">
+                            Privat/Wohnen
+                        </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chk_answer_2" name="coveredByTrafficInsurance">
+                        <label class="form-check-label" for="chk_answer_2">
+                            Verkehr
+                        </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="chk_answer_3" name="coveredByJobInsurance">
+                        <label class="form-check-label" for="chk_answer_3">
+                            Beruf
+                        </label>
+                </div>
+
+
+                <div class="float-right">
+                    <a role="button" class="btn btn-link" href="/home">Zum Hauptmenü</a>
+                    <button name="submit" id="btn_submit" type="submit" class="btn btn-success">Speichern</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</html>

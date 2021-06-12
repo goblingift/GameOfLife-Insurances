@@ -9,7 +9,9 @@ import gift.goblin.goli.database.repository.actioncards.CarInsuranceActionCardRe
 import gift.goblin.goli.database.repository.actioncards.DisabilityInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.HomeInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.HouseholdInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.LegalProtectionInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.LiabilityInsuranceActionCardRepository;
+import gift.goblin.goli.database.repository.actioncards.SeniorAccidentInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.SmartphoneInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.TermLifeInsuranceActionCardRepository;
 import gift.goblin.goli.enumerations.Insurance;
@@ -44,13 +46,18 @@ public class CardPicker {
 
     @Autowired
     SmartphoneInsuranceActionCardRepository smartphoneInsuranceActionCardRepository;
-    
+
     @Autowired
     HomeInsuranceActionCardRepository homeInsuranceActionCardRepository;
-    
+
     @Autowired
     TermLifeInsuranceActionCardRepository termLifeInsuranceActionCardRepository;
-    
+
+    @Autowired
+    SeniorAccidentInsuranceActionCardRepository seniorAccidentInsuranceActionCardRepository;
+
+    @Autowired
+    LegalProtectionInsuranceActionCardRepository legalProtectionInsuranceActionCardRepository;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -102,6 +109,11 @@ public class CardPicker {
                 return getNewRandomCardId(homeInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
             case TERMLIFE_INSURANCE:
                 return getNewRandomCardId(termLifeInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+            case LEGALPROTECTION_INSURANCE:
+                return getNewRandomCardId(legalProtectionInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+            case SENIORACCIDENT_INSURANCE:
+                return getNewRandomCardId(seniorAccidentInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+
         }
 
         logger.error("Unknown insurance-type given: {}", insurance);

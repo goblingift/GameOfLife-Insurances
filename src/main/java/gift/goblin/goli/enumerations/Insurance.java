@@ -22,9 +22,10 @@ public enum Insurance {
     DISABILITY_INSURANCE(103, 5, "Berufsunfähigkeitsversicherung", 0.00, 600.00, 1200.00, CardController.BASE_URL_CARDS + "/add/disability-insurance", "/actioncards/add_disability_insurance :: replace_fragment"),
     HOUSEHOLD_INSURANCE(104, 8, "Hausratsversicherung", 0.00, 500.00, 800.00, CardController.BASE_URL_CARDS + "/add/household-insurance", "/actioncards/add_household_insurance :: replace_fragment"),
     HOME_INSURANCE(105, 18, "Wohngebäudeversicherung", 0.00, 700.00, 850.00, CardController.BASE_URL_CARDS + "/add/home-insurance", "/actioncards/add_home_insurance :: replace_fragment"),
-    TERMLIFE_INSURANCE(106, 22, "Risikolebensversicherung", 0.00, 150.00, 300.00, CardController.BASE_URL_CARDS + "/add/termlife-insurance", "/actioncards/add_termlife_insurance :: replace_fragment");
+    TERMLIFE_INSURANCE(106, 22, "Risikolebensversicherung", 0.00, 150.00, 300.00, CardController.BASE_URL_CARDS + "/add/termlife-insurance", "/actioncards/add_termlife_insurance :: replace_fragment"),
+    SENIORACCIDENT_INSURANCE(107, 30, "Seniorenunfallversicherung", 0.00, 110.00, 200.00, CardController.BASE_URL_CARDS + "/add/senioraccident-insurance", "/actioncards/add_senioraccident_insurance :: replace_fragment"),
+    LEGALPROTECTION_INSURANCE(108, 14, "Rechtsschutzversicherung", 180.00, 360.00, 540.00, CardController.BASE_URL_CARDS + "/add/legalprotection-insurance", "/actioncards/add_legalprotection_insurance :: replace_fragment");
     
-
     private Insurance(int id, int level, String name, double priceYearly1, double priceYearly2, double priceYearly3, String addCardEndpoint, String templatePath) {
         this.id = id;
         this.level = level;

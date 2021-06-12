@@ -11,7 +11,9 @@ import gift.goblin.goli.database.model.actioncards.CarInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.DisabilityInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.HomeInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.HouseholdInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.LegalProtectionInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.LiabilityInsuranceActionCard;
+import gift.goblin.goli.database.model.actioncards.SeniorAccidentInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.SmartphoneInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.TermLifeInsuranceActionCard;
 import gift.goblin.goli.database.repository.ContractedInsuranceRepository;
@@ -105,6 +107,76 @@ public class ActionCardTextConverter {
         }
 
         return new ActionCardText(Insurance.LIABILITY_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+    }
+    
+    public ActionCardText convertToActionCardText(SeniorAccidentInsuranceActionCard actionCard, UserGameStatus userGameStatus) {
+
+        String damageCaseAdditionalDescription = "";
+        double damageAmountToPay = actionCard.getDamageAmount();
+
+        // Get the insurance contract of the user
+        User user = userRepository.findByFullname(userGameStatus.getUsername());
+        Optional<ContractedInsurance> optInsurance = contractedInsuranceRepository.findByUserAndInsuranceId(user, Insurance.SENIORACCIDENT_INSURANCE.getId());
+        if (optInsurance.isPresent()) {
+            ContractedInsurance contractedInsurance = optInsurance.get();
+            int selectedChoice = contractedInsurance.getSelectedChoice();
+
+            if (selectedChoice == 1) {
+                damageAmountToPay = actionCard.getDamageAmount();
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.SENIORACCIDENT_INSURANCE.getId(), null, Locale.GERMANY);
+            } else if (selectedChoice == 2) {
+                if (actionCard.getDamageAmount() > 40_000) {
+                    damageAmountToPay = actionCard.getDamageAmount() - 40_000;
+                } else {
+                    damageAmountToPay = 0.00;
+                }
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.partialrefund.id." + Insurance.SENIORACCIDENT_INSURANCE.getId(), null, Locale.GERMANY);
+            } else if (selectedChoice == 3) {
+                if (actionCard.getDamageAmount() > 75_000) {
+                    damageAmountToPay = actionCard.getDamageAmount() - 75_000;
+                } else {
+                    damageAmountToPay = 0.00;
+                }
+                damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.SENIORACCIDENT_INSURANCE.getId(), null, Locale.GERMANY);
+            }
+        }
+
+        return new ActionCardText(Insurance.SENIORACCIDENT_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+    }
+    
+    
+    public ActionCardText convertToActionCardText(LegalProtectionInsuranceActionCard actionCard, UserGameStatus userGameStatus) {
+
+        String damageCaseAdditionalDescription = "";
+        boolean enoughInsurance = false;
+        double damageAmountToPay = actionCard.getDamageAmount();
+
+        // Get the insurance contract of the user
+        User user = userRepository.findByFullname(userGameStatus.getUsername());
+        Optional<ContractedInsurance> optInsurance = contractedInsuranceRepository.findByUserAndInsuranceId(user, Insurance.LEGALPROTECTION_INSURANCE.getId());
+        if (optInsurance.isPresent()) {
+            ContractedInsurance contractedInsurance = optInsurance.get();
+            int selectedChoice = contractedInsurance.getSelectedChoice();
+
+            if (actionCard.isCoveredByPrivateInsurance() && selectedChoice >= 2) {
+                enoughInsurance = true;
+            } else if (actionCard.isCoveredByTrafficInsurance() && selectedChoice >= 3) {
+                enoughInsurance = true;
+            } else if (actionCard.isCoveredByJobInsurance() && selectedChoice >= 4) {
+                enoughInsurance = true;
+            }
+        }
+
+        if (enoughInsurance) {
+            damageAmountToPay = 0.00;
+            damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.fullrefund.id." + Insurance.LEGALPROTECTION_INSURANCE.getId(), null, Locale.GERMANY);
+        } else {
+            damageCaseAdditionalDescription = messageSource.getMessage("decision.insurance.result.norefund.id." + Insurance.LEGALPROTECTION_INSURANCE.getId(), null, Locale.GERMANY);
+        }
+
+        return new ActionCardText(Insurance.LEGALPROTECTION_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
                 damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
     }
     
