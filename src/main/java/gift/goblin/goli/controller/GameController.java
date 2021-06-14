@@ -11,7 +11,7 @@ import gift.goblin.goli.dto.DecisionAnswer;
 import gift.goblin.goli.enumerations.Insurance;
 import gift.goblin.goli.enumerations.Level;
 import gift.goblin.goli.enumerations.LevelType;
-import gift.goblin.goli.security.service.GameCardService;
+import gift.goblin.goli.service.GameCardService;
 import java.util.Optional;
 import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
@@ -46,7 +46,14 @@ public class GameController {
     public String renderGameBoard(HttpSession session, Model model) {
         logger.info("User opened game board page.");
         
-        UserGameStatus userGameStatus = gameCardService.getUserGameStatus(getUsernameFromSession(session));
+        String username = gameCardService.getUsernameFromSession(session);
+        UserGameStatus userGameStatus = gameCardService.getUserGameStatus(username);
+        
+        if (userGameStatus.isGameOver()) {
+            logger.warn("User {} is game-over, redirect em again to the result-page.", username);
+            return "game_over";
+        }
+        
         Optional<Level> optLevel = Level.findByLevel(userGameStatus.getLevel());
         
         if (optLevel.isPresent()) {
@@ -62,16 +69,13 @@ public class GameController {
         return "game_board";
     }
 
-    private String getUsernameFromSession(HttpSession session) {
-        return (String) session.getAttribute(WebSecurityConfig.SESSION_FIELD_USERNAME);
-    }
 
     @PostMapping("/make-decision")
     @ResponseBody
     public boolean submitDecision(DecisionAnswer decisionAnswer, HttpSession session, Model model) {
         
         logger.info("Called submitDecision with data: {}", decisionAnswer);
-        UserGameStatus userGameStatus = gameCardService.getUserGameStatus(getUsernameFromSession(session));
+        UserGameStatus userGameStatus = gameCardService.getUserGameStatus(gameCardService.getUsernameFromSession(session));
         boolean gameContinues = true;
         
         Optional<Level> optLevel = Level.findByLevel(decisionAnswer.getLevel());
@@ -81,14 +85,16 @@ public class GameController {
         }
         // If user is currently in a level where a decision can be made, handle it
         if (optLevel.get().getLevelType() == LevelType.DECISION || optLevel.get().getLevelType() == LevelType.INSURANCE) {
-            gameContinues = gameCardService.handleUserDecision(getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
+            gameContinues = gameCardService.handleUserDecision(gameCardService.getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
         } else if (optLevel.get().getLevelType() == LevelType.ACTION) {
             gameContinues = gameCardService.handleActionCard(userGameStatus);
+        } else if (optLevel.get().getLevelType() == LevelType.INFO) {
+            // TODO IMPLEMENT IT!
         }
         
         // Set player to next level
         if (gameContinues) {
-            gameContinues = gameCardService.moveUserToNextLevel(getUsernameFromSession(session), decisionAnswer.getLevel());
+            gameContinues = gameCardService.moveUserToNextLevel(gameCardService.getUsernameFromSession(session), decisionAnswer.getLevel());
         }
         
         logger.info("Return after /make-decision call: " + gameContinues);
@@ -107,7 +113,7 @@ public class GameController {
     public void startNewGame(HttpSession session, Model model) {
         logger.info("User called /new-game, will start new game in level 1.");
         
-        gameCardService.startNewGame(getUsernameFromSession(session));
+        gameCardService.startNewGame(gameCardService.getUsernameFromSession(session));
     }
     
     
@@ -115,7 +121,7 @@ public class GameController {
     public String getDialogContent(HttpSession session, Model model) {
         
         // User picked new card- so update the level of the user
-        UserGameStatus userGameStatus = gameCardService.getUserGameStatus(getUsernameFromSession(session));
+        UserGameStatus userGameStatus = gameCardService.getUserGameStatus(gameCardService.getUsernameFromSession(session));
         model.addAttribute("userGameStatus", userGameStatus);
         
         // check what kind of action will be next
@@ -140,6 +146,8 @@ public class GameController {
                     logger.info("Will add new actionCardText to model: {}", actionCardText);
                     model.addAttribute("actionCardText", actionCardText);
                     return "/decision/action_card :: replace_fragment";
+                case GAMEOVER:
+                    return "/decision/game_over_dialog :: replace_fragment";
                 default:
                     throw new AssertionError();
             }
@@ -150,6 +158,22 @@ public class GameController {
         return null;
     }
     
-    
+    @GetMapping("/game-over")
+    public String finishGame(HttpSession session, Model model) {
 
+        String username = gameCardService.getUsernameFromSession(session);
+        UserGameStatus userGameStatus = gameCardService.getUserGameStatus(username);
+        if (!userGameStatus.isGameOver() && userGameStatus.getLevel() == Level.getSIZE()) {
+            logger.info("Set user {} to game-over state right now.", username);
+            gameCardService.setUserGameOver(username);
+            return "redirect:/game-over";
+        } else if (userGameStatus.isGameOver() && userGameStatus.getLevel() == Level.getSIZE()) {
+            logger.info("User {} called /game-over endpoint again, but is still game-over. Just show game_over template.", username);
+            return "redirect:/game-over";
+        } else {
+            logger.warn("User {} tried to call /game-over endpoint, but hasnt reached final level! Ignore and show game board.", username);
+            return "redirect:/game";
+        }
+    }
+    
 }

@@ -9,5 +9,5 @@ package gift.goblin.goli.enumerations;
  * @author andre
  */
 public enum LevelType {
-    INFO, DECISION, INSURANCE, ACTION;
+    INFO, DECISION, INSURANCE, ACTION, GAMEOVER;
 }

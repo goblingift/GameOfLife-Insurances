@@ -2,6 +2,16 @@
     <head th:replace="library_includes :: frontend_libraries" />
     <body>
         
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark" th:fragment="header_nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-primary" id="btn_home" onclick="location.href = '/home';"><span class="btn-label"><i class="fas fa-home fa-lg"></i></span> Hauptmenü</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        
         <div class="container-fluid" style="margin-top: 20px;">
             
             <div th:if="${display_success}" class="alert alert-success" id="success-alert" role="alert">

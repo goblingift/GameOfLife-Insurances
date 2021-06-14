@@ -2,7 +2,7 @@
  * Copyright (C) 2021 Andre Kessler (https://github.com/goblingift)
  * All rights reserved
  */
-package gift.goblin.goli.security.service;
+package gift.goblin.goli.service;
 
 import gift.goblin.goli.WebSecurityConfig;
 import gift.goblin.goli.database.model.Role;

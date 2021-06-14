@@ -2,8 +2,9 @@
  * Copyright (C) 2021 Andre Kessler (https://github.com/goblingift)
  * All rights reserved
  */
-package gift.goblin.goli.security.service;
+package gift.goblin.goli.service;
 
+import gift.goblin.goli.WebSecurityConfig;
 import gift.goblin.goli.database.model.ContractedInsurance;
 import gift.goblin.goli.database.model.User;
 import gift.goblin.goli.database.model.UserGameStatus;
@@ -29,12 +30,14 @@ import gift.goblin.goli.database.repository.actioncards.SeniorAccidentInsuranceA
 import gift.goblin.goli.database.repository.actioncards.SmartphoneInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.TermLifeInsuranceActionCardRepository;
 import gift.goblin.goli.dto.ActionCardText;
+import gift.goblin.goli.dto.GameOverSummary;
 import gift.goblin.goli.enumerations.Insurance;
 import gift.goblin.goli.enumerations.Level;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +106,13 @@ public class GameCardService {
         return userGameStatus;
     }
     
+    public void setUserGameOver(String username) {
+        logger.info("Will set user {} to game-over.", username);
+        
+        UserGameStatus userGameStatus = getUserGameStatus(username);
+        userGameStatus.setGameOver(true);
+        userGameStatusRepository.save(userGameStatus);
+    }
     
     public void startNewGame(String username) {
         logger.info("Starting new game for user: {}", username);
@@ -490,7 +500,10 @@ public class GameCardService {
         
         return returnValue;
     }
-    
+
+    public String getUsernameFromSession(HttpSession session) {
+        return (String) session.getAttribute(WebSecurityConfig.SESSION_FIELD_USERNAME);
+    }
     
 
 }

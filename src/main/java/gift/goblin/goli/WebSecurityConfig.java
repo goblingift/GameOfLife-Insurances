@@ -4,7 +4,7 @@
  */
 package gift.goblin.goli;
 
-import gift.goblin.goli.security.service.CustomUserDetailsService;
+import gift.goblin.goli.service.CustomUserDetailsService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

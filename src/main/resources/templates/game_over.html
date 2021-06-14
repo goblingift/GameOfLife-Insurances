@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="library_includes :: frontend_libraries" />
+    <body>
+
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark" th:fragment="header_nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-primary" id="btn_home" onclick="location.href = '/home';"><span class="btn-label"><i class="fas fa-home fa-lg"></i></span> Hauptmenü</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="container-fluid" style="margin-top: 20px;">
+
+            <div>
+                <p class="text-headline">
+                    Game Over
+                </p>
+            </div>
+
+            <div class="border">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <h3>KFZ-Versicherung</h3>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a>Versicherungsjahre:</a>
+                        </div>
+                        <div class="col">
+                            <input disabled type="text" th:value="${quizcard.answer3}" class="form-control" aria-label="Text input with radio button">
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

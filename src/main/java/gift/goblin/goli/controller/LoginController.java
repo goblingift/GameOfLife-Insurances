@@ -8,7 +8,7 @@ import gift.goblin.goli.WebSecurityConfig;
 import gift.goblin.goli.database.model.UserGameStatus;
 import gift.goblin.goli.database.repository.UserGameStatusRepository;
 import gift.goblin.goli.dto.UserCredentials;
-import gift.goblin.goli.security.service.CustomUserDetailsService;
+import gift.goblin.goli.service.CustomUserDetailsService;
 import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

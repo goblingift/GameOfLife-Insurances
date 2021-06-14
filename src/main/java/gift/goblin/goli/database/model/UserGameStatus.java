@@ -34,7 +34,8 @@ public class UserGameStatus {
     @DBRef
     private List<ContractedInsurance> contractedInsurances = new ArrayList<>();
     private List<String> pickedActionCards = new ArrayList<>();
-            
+    // defines if the game is over. If its true, user has to restart game
+    private boolean gameOver;
 
     public UserGameStatus(String username, int level) {
         this.username = username;
@@ -132,6 +133,14 @@ public class UserGameStatus {
     public void setPickedActionCards(List<String> pickedActionCards) {
         this.pickedActionCards = pickedActionCards;
     }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
     
     @Override
     public int hashCode() {
@@ -180,7 +189,7 @@ public class UserGameStatus {
 
     @Override
     public String toString() {
-        return "UserGameStatus{" + "id=" + id + ", username=" + username + ", level=" + level + ", paidForInsurances=" + paidForInsurances + ", paidForClaims=" + paidForClaims + ", actualCardInsuranceId=" + actualCardInsuranceName + ", actualCardId=" + actualCardId + ", contractedInsurances=" + contractedInsurances + ", pickedActionCards=" + pickedActionCards + '}';
+        return "UserGameStatus{" + "id=" + id + ", username=" + username + ", level=" + level + ", paidForInsurances=" + paidForInsurances + ", paidForClaims=" + paidForClaims + ", actualCardInsuranceName=" + actualCardInsuranceName + ", actualCardId=" + actualCardId + ", contractedInsurances=" + contractedInsurances + ", pickedActionCards=" + pickedActionCards + ", gameOver=" + gameOver + '}';
     }
 
 }

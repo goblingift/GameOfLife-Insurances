@@ -4,8 +4,12 @@
 
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark" th:fragment="header_nav">
             <ul class="navbar-nav mr-auto">
+
                 <li class="nav-item">
-                    <input disabled type="text" th:value="${userGameStatus.level}" id="input_level" class="form-control">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Alter:</span>
+                        <input disabled type="text" th:value="${userGameStatus.level}" id="input_level" class="form-control">
+                    </div>
                 </li>
             </ul>
 
@@ -20,7 +24,12 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <div class="btn-group btn-group-lg mr-2" role="group">
-                        <button type="button" class="btn btn-labeled btn-success" id="btn_reset" data-toggle="modal" data-target="#modal-dialog-reset"><span class="btn-label"><i class="fas fa-reply fa-lg"></i></span> Neues Spiel</button>
+                        <button type="button" class="btn btn-labeled btn-danger" id="btn_reset" data-toggle="modal" data-target="#modal-dialog-reset"><span class="btn-label"><i class="fas fa-reply fa-lg"></i></span> Neues Spiel</button>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-primary" id="btn_home" onclick="location.href = '/home';"><span class="btn-label"><i class="fas fa-home fa-lg"></i></span> Hauptmenü</button>
                     </div>
                 </li>
             </ul>
