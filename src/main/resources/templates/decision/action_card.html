@@ -76,10 +76,11 @@ All rights reserved
                     $.post("/game/make-decision",
                             {level: level, answer: 0},
                             function (response) {
-
+                                console.log("got response after making decision:" + response);
                                 if (response) {
                                     console.log("Successful submitted answer- set user to next level!");
-                                    
+                                    // Update id counter
+                                    $('#input_level').val(parseInt(level) + 1);
                                 } else {
                                     console.log("Game over- set user to last level!");
                                     $.get('/game/last-level',

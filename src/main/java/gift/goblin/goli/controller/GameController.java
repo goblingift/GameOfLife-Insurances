@@ -81,16 +81,17 @@ public class GameController {
         }
         // If user is currently in a level where a decision can be made, handle it
         if (optLevel.get().getLevelType() == LevelType.DECISION || optLevel.get().getLevelType() == LevelType.INSURANCE) {
-            boolean handledUserDecision = gameCardService.handleUserDecision(getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
+            gameContinues = gameCardService.handleUserDecision(getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
         } else if (optLevel.get().getLevelType() == LevelType.ACTION) {
             gameContinues = gameCardService.handleActionCard(userGameStatus);
         }
         
         // Set player to next level
         if (gameContinues) {
-            gameCardService.moveUserToNextLevel(getUsernameFromSession(session), decisionAnswer.getLevel());
+            gameContinues = gameCardService.moveUserToNextLevel(getUsernameFromSession(session), decisionAnswer.getLevel());
         }
         
+        logger.info("Return after /make-decision call: " + gameContinues);
         return gameContinues;
     }
     
