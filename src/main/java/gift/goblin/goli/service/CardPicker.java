@@ -14,7 +14,9 @@ import gift.goblin.goli.database.repository.actioncards.LiabilityInsuranceAction
 import gift.goblin.goli.database.repository.actioncards.SeniorAccidentInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.SmartphoneInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.TermLifeInsuranceActionCardRepository;
+import gift.goblin.goli.dto.InsuranceWithType;
 import gift.goblin.goli.enumerations.Insurance;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -69,6 +71,7 @@ public class CardPicker {
      * @return the type of action-card for the next-card which the user will
      * get.
      */
+    @Deprecated
     public Insurance getNewRandomInsurance(UserGameStatus userGameStatus) {
 
         List<Insurance> possibleInsurances = Insurance.getValues().stream().filter(i -> i.getLevel() <= userGameStatus.getLevel())
@@ -90,34 +93,106 @@ public class CardPicker {
      * @return a new action-card id. (If user already picked all cards of that
      * insurance, take one card again)
      */
+    @Deprecated
     public String getNewRandomActionCard(UserGameStatus userGameStatus, Insurance insurance) {
 
         logger.info("Draw new action-card of Insurance-type: {}", insurance.getName());
 
         switch (insurance) {
             case CAR_INSURANCE:
-                return getNewRandomCardId(carInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+                return getNewRandomCardId(carInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), 
+                        userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList()));
             case DISABILITY_INSURANCE:
-                return getNewRandomCardId(disabilityInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+                return getNewRandomCardId(disabilityInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()),
+                        userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList()));
             case HOUSEHOLD_INSURANCE:
-                return getNewRandomCardId(householdInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+                return getNewRandomCardId(householdInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), 
+                        userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList()));
             case LIABILITY_INSURANCE:
-                return getNewRandomCardId(liabilityInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+                return getNewRandomCardId(liabilityInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()),
+                        userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList()));
             case SMARTPHONE_INSURANCE:
-                return getNewRandomCardId(smartphoneInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+                return getNewRandomCardId(smartphoneInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()),
+                        userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList()));
             case HOME_INSURANCE:
-                return getNewRandomCardId(homeInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+                return getNewRandomCardId(homeInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), 
+                        userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList()));
             case TERMLIFE_INSURANCE:
-                return getNewRandomCardId(termLifeInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+                return getNewRandomCardId(termLifeInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()),
+                        userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList()));
             case LEGALPROTECTION_INSURANCE:
-                return getNewRandomCardId(legalProtectionInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+                return getNewRandomCardId(legalProtectionInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()),
+                        userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList()));
             case SENIORACCIDENT_INSURANCE:
-                return getNewRandomCardId(seniorAccidentInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), userGameStatus.getPickedActionCards());
+                return getNewRandomCardId(seniorAccidentInsuranceActionCardRepository.findAll().stream().map(i -> i.getId()).collect(Collectors.toList()), 
+                        userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList()));
 
         }
 
         logger.error("Unknown insurance-type given: {}", insurance);
         return null;
+    }
+
+    /**
+     * Picks a new random actioncard, which werent already drawn by the player.
+     * @param userGameStatus required to get list of already played actioncards.
+     * @return the id and the type of the drawn actioncard.
+     */
+    public InsuranceWithType getNewRandomActionCard(UserGameStatus userGameStatus) {
+
+        List<InsuranceWithType> allActionCards = new ArrayList<>();
+        
+        if (userGameStatus.getLevel() > Insurance.CAR_INSURANCE.getLevel()) {
+            List<InsuranceWithType> carInsuranceActionCards = carInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.CAR_INSURANCE)).collect(Collectors.toList());
+            allActionCards.addAll(carInsuranceActionCards);
+        }
+        
+        if (userGameStatus.getLevel() > Insurance.DISABILITY_INSURANCE.getLevel()) {
+            List<InsuranceWithType> disabilityInsuranceActionCards = disabilityInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.DISABILITY_INSURANCE)).collect(Collectors.toList());
+            allActionCards.addAll(disabilityInsuranceActionCards);
+        }
+
+        if (userGameStatus.getLevel() > Insurance.HOUSEHOLD_INSURANCE.getLevel()) {
+            List<InsuranceWithType> householdInsuranceActionCards = householdInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.HOUSEHOLD_INSURANCE)).collect(Collectors.toList());
+            allActionCards.addAll(householdInsuranceActionCards);
+        }
+
+        if (userGameStatus.getLevel() > Insurance.LIABILITY_INSURANCE.getLevel()) {
+            List<InsuranceWithType> liabilityInsuranceActionCards = liabilityInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.LIABILITY_INSURANCE)).collect(Collectors.toList());
+            allActionCards.addAll(liabilityInsuranceActionCards);
+        }
+
+        if (userGameStatus.getLevel() > Insurance.SMARTPHONE_INSURANCE.getLevel()) {
+            List<InsuranceWithType> smartphoneInsuranceActionCards = smartphoneInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.SMARTPHONE_INSURANCE)).collect(Collectors.toList());
+            allActionCards.addAll(smartphoneInsuranceActionCards);
+        }
+
+        if (userGameStatus.getLevel() > Insurance.HOME_INSURANCE.getLevel()) {
+            List<InsuranceWithType> homeInsuranceActionCards = homeInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.HOME_INSURANCE)).collect(Collectors.toList());
+            allActionCards.addAll(homeInsuranceActionCards);
+        }
+        
+        if (userGameStatus.getLevel() > Insurance.TERMLIFE_INSURANCE.getLevel()) {
+            List<InsuranceWithType> termLifeInsuranceActionCards = termLifeInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.TERMLIFE_INSURANCE)).collect(Collectors.toList());
+            allActionCards.addAll(termLifeInsuranceActionCards);
+        }
+
+        if (userGameStatus.getLevel() > Insurance.LEGALPROTECTION_INSURANCE.getLevel()) {
+            List<InsuranceWithType> legalProtectionInsuranceActionCards = legalProtectionInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.LEGALPROTECTION_INSURANCE)).collect(Collectors.toList());
+            allActionCards.addAll(legalProtectionInsuranceActionCards);
+        }
+
+        if (userGameStatus.getLevel() > Insurance.SENIORACCIDENT_INSURANCE.getLevel()) {
+            List<InsuranceWithType> seniorAccidentInsuranceActionCards = seniorAccidentInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.SENIORACCIDENT_INSURANCE)).collect(Collectors.toList());
+            allActionCards.addAll(seniorAccidentInsuranceActionCards);
+        }
+        
+        // get all actioncards, which were already drawn by the user
+        List<String> playedActionCardIds = userGameStatus.getDamageCases().stream().map(dc -> dc.getActionCardId()).collect(Collectors.toList());
+
+        List<InsuranceWithType> newActionCardIds = allActionCards.stream().filter(ac -> !playedActionCardIds.contains(ac.getId())).collect(Collectors.toList());
+        Random rand = new Random();
+        return newActionCardIds.get(rand.nextInt(newActionCardIds.size()));
     }
 
     /**

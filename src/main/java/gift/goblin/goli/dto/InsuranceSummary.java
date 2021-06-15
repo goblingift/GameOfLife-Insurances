@@ -13,21 +13,24 @@ public class InsuranceSummary {
     private String insuranceName;
     // true if user bought that insurance- false if not
     private boolean agreed;
+    // years of membership
     private int years;
+    // paid costs for the membership of that insurance
     private double paidCosts;
+    // how many money the insurance paid for damages
     private double savedMoney;
+    // how many money you have spent for damage-cases, which should be covered by that insurance
     private double paidDamageCosts;
-
+    // Contains the selected package of that insurance, e.g. 'Haftpflicht ohne SB (Kostet 70€ im Jahr)'
+    private String selectedInsurance;
+    // how many damage cases you had in your life
+    private int damageCases;
+    
     public InsuranceSummary() {
     }
 
-    public InsuranceSummary(String insuranceName, boolean agreed, int years, double paidCosts, double savedMoney, double paidDamageCosts) {
+    public InsuranceSummary(String insuranceName) {
         this.insuranceName = insuranceName;
-        this.agreed = agreed;
-        this.years = years;
-        this.paidCosts = paidCosts;
-        this.savedMoney = savedMoney;
-        this.paidDamageCosts = paidDamageCosts;
     }
 
     public String getInsuranceName() {
@@ -78,9 +81,25 @@ public class InsuranceSummary {
         this.paidDamageCosts = paidDamageCosts;
     }
 
+    public String getSelectedInsurance() {
+        return selectedInsurance;
+    }
+
+    public void setSelectedInsurance(String selectedInsurance) {
+        this.selectedInsurance = selectedInsurance;
+    }
+
+    public int getDamageCases() {
+        return damageCases;
+    }
+
+    public void setDamageCases(int damageCases) {
+        this.damageCases = damageCases;
+    }
+
     @Override
     public String toString() {
-        return "InsuranceSummary{" + "insuranceName=" + insuranceName + ", agreed=" + agreed + ", years=" + years + ", paidCosts=" + paidCosts + ", savedMoney=" + savedMoney + ", paidDamageCosts=" + paidDamageCosts + '}';
+        return "InsuranceSummary{" + "insuranceName=" + insuranceName + ", agreed=" + agreed + ", years=" + years + ", paidCosts=" + paidCosts + ", savedMoney=" + savedMoney + ", paidDamageCosts=" + paidDamageCosts + ", selectedInsurance=" + selectedInsurance + ", damageCases=" + damageCases + '}';
     }
-    
+
 }

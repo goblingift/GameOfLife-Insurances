@@ -98,9 +98,11 @@
         $(document).ready(function () {
             $("#btn_nextCard").click(function () {
                 console.log("Clicked nextCard button");
-
+                $("#replace_div").toggleClass("opacity", true);
+                
                 $.get("/game/get-dialog").done(function (fragment) { // get from controller
                     $("#replace_div").replaceWith(fragment); // update snippet of page
+                    $("#replace_div").toggleClass("opacity", false);
                 });
 
             });

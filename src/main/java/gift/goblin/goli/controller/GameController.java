@@ -51,7 +51,7 @@ public class GameController {
         
         if (userGameStatus.isGameOver()) {
             logger.warn("User {} is game-over, redirect em again to the result-page.", username);
-            return "game_over";
+            return "redirect:/game-over";
         }
         
         Optional<Level> optLevel = Level.findByLevel(userGameStatus.getLevel());

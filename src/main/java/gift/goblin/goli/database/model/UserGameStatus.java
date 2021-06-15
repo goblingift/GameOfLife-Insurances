@@ -6,8 +6,8 @@ package gift.goblin.goli.database.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -33,7 +33,9 @@ public class UserGameStatus {
     private String actualCardId;
     @DBRef
     private List<ContractedInsurance> contractedInsurances = new ArrayList<>();
-    private List<String> pickedActionCards = new ArrayList<>();
+    // contains the picked action-cards. The key of the map is the actioncard-id, the value is the actioncard-type.
+    @DBRef
+    private List<DamageCase> damageCases = new ArrayList<>();
     // defines if the game is over. If its true, user has to restart game
     private boolean gameOver;
 
@@ -56,6 +58,10 @@ public class UserGameStatus {
                 .collect(Collectors.toList());
         existingContracts.add(contractedInsurance);
         this.contractedInsurances = existingContracts;
+    }
+    
+    public void addDamageCase(DamageCase damageCase) {
+        damageCases.add(damageCase);
     }
 
     public UserGameStatus(String username) {
@@ -126,12 +132,12 @@ public class UserGameStatus {
         this.actualCardId = actualCardId;
     }
 
-    public List<String> getPickedActionCards() {
-        return pickedActionCards;
+    public List<DamageCase> getDamageCases() {
+        return damageCases;
     }
 
-    public void setPickedActionCards(List<String> pickedActionCards) {
-        this.pickedActionCards = pickedActionCards;
+    public void setDamageCases(List<DamageCase> damageCases) {
+        this.damageCases = damageCases;
     }
 
     public boolean isGameOver() {
@@ -189,7 +195,8 @@ public class UserGameStatus {
 
     @Override
     public String toString() {
-        return "UserGameStatus{" + "id=" + id + ", username=" + username + ", level=" + level + ", paidForInsurances=" + paidForInsurances + ", paidForClaims=" + paidForClaims + ", actualCardInsuranceName=" + actualCardInsuranceName + ", actualCardId=" + actualCardId + ", contractedInsurances=" + contractedInsurances + ", pickedActionCards=" + pickedActionCards + ", gameOver=" + gameOver + '}';
+        return "UserGameStatus{" + "id=" + id + ", username=" + username + ", level=" + level + ", paidForInsurances=" + paidForInsurances + ", paidForClaims=" + paidForClaims + ", actualCardInsuranceName=" + actualCardInsuranceName + ", actualCardId=" + actualCardId + ", contractedInsurances=" + contractedInsurances + ", damageCases=" + damageCases + ", gameOver=" + gameOver + '}';
     }
 
+    
 }

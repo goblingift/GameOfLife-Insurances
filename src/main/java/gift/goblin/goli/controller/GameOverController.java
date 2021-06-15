@@ -8,6 +8,7 @@ import gift.goblin.goli.database.model.UserGameStatus;
 import gift.goblin.goli.dto.GameOverSummary;
 import gift.goblin.goli.enumerations.Level;
 import gift.goblin.goli.service.GameCardService;
+import gift.goblin.goli.service.GameSummaryService;
 import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ public class GameOverController {
 
     @Autowired
     private GameCardService gameCardService;
+    
+    @Autowired
+    private GameSummaryService gameSummaryService;
 
     @GetMapping()
     public String renderGameSummary(HttpSession session, Model model) {
@@ -43,7 +47,8 @@ public class GameOverController {
             return "redirect:/game";
         }
         
-        GameOverSummary gameOverSummary = gameCardService.generateGameSummary(username);
+        GameOverSummary gameOverSummary = gameSummaryService.generateGameSummary(username);
+        logger.info("Adding gameOverSummary to model: {}", gameOverSummary);
         model.addAttribute("summary", gameOverSummary);
         
         return "game_over";

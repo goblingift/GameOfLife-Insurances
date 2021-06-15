@@ -24,21 +24,101 @@
                 <div class="container">
                     <div class="row">
                         <div class="col">
-                            <h3>KFZ-Versicherung</h3>
+                            <h3>Endergebniss</h3>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col">
+                            <a>Bezahlte Versicherungsbeiträge:</a>
+                        </div>
+                        <div class="col">
+                            <strong><span>[[${#numbers.formatCurrency(summary.paidCostsSum)}]]</span></strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a>Übernommene Schäden durch Versicherung:</a>
+                        </div>
+                        <div class="col">
+                            <strong><span>[[${#numbers.formatCurrency(summary.savedMoneySum)}]]</span></strong>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a>Selbst gezahlte Schadenssummen:</a>
+                        </div>
+                        <div class="col">
+                            <strong><span>[[${#numbers.formatCurrency(summary.paidDamageCostsSum)}]]</span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="border" th:each="actObject,iterStat : ${summary.insuranceSummaries}">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <strong><a th:text="${actObject.insuranceName}" /></strong>
+                        </div>
+                    </div>
+                    <div class="row" th:if="${actObject.agreed}">
+                        <div class="col text-right">
+                            <a>Gebuchter Versicherungstarif:</a>
+                        </div>
+                        <div class="col">
+                            <span><a th:text="${actObject.selectedInsurance}" /></span>
+                        </div>
+                    </div>
+                    <div class="row" th:if="${actObject.agreed}">
+                        <div class="col text-right">
                             <a>Versicherungsjahre:</a>
                         </div>
                         <div class="col">
-                            <input disabled type="text" th:value="${quizcard.answer3}" class="form-control" aria-label="Text input with radio button">
+                            <span><a th:text="${actObject.years}" /> Jahre</span>
                         </div>
                     </div>
-
-
+                    <div class="row" th:if="${!actObject.agreed}">
+                        <div class="col">
+                            <a>(Versicherung wurde nicht abgeschlossen)</a>
+                        </div>
+                    </div>
+                    <div class="row" th:if="${actObject.agreed}">
+                        <div class="col text-right">
+                            <a>Gezahlte Versicherungsbeiträge:</a>
+                        </div>
+                        <div class="col">
+                            <span>[[${#numbers.formatCurrency(actObject.paidCosts)}]]</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <a>Anzahl von Versicherungsfällen:</a>
+                        </div>
+                        <div class="col">
+                            <span><a th:text="${actObject.damageCases}" /></span>
+                        </div>
+                    </div>
+                    <div class="row" th:if="${actObject.agreed}">
+                        <div class="col text-right">
+                            <a>Übernommene Schadenssummen durch Versicherung:</a>
+                        </div>
+                        <div class="col">
+                            <span>[[${#numbers.formatCurrency(actObject.savedMoney)}]]</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col text-right">
+                            <a>Selbst gezahlte Schadenssummen:</a>
+                        </div>
+                        <div class="col">
+                            <span>[[${#numbers.formatCurrency(actObject.paidDamageCosts)}]]</span>
+                        </div>
+                    </div>
                 </div>
             </div>
+            
+            
         </div>
     </body>
 
