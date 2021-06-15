@@ -74,6 +74,7 @@ All rights reserved
                                 if (response) {
                                     // Update id counter
                                     $('#input_level').val(parseInt(level) + 1);
+                                    $('#input_age').val(parseInt(level) * 2 + 18);
                                 } else {
                                     console.log("An error occured- reload game page again");
                                     window.location.href = '/game';

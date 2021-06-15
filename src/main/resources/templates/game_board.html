@@ -8,7 +8,8 @@
                 <li class="nav-item">
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="inputGroup-sizing-default">Alter:</span>
-                        <input disabled type="text" th:value="${userGameStatus.level}" id="input_level" class="form-control">
+                        <input disabled style="display:none" type="text" th:value="${userGameStatus.level}" id="input_level" class="form-control">
+                        <input disabled type="text" th:value="${userGameStatus.level * 2 + 18}" id="input_age" class="form-control">
                     </div>
                 </li>
             </ul>
@@ -71,7 +72,7 @@
 
         <div class="container-fluid" style="margin-top: 20px;">
 
-            <img th:src="@{/images/game_board.jpg}" class="img-fluid" alt="game board image">
+            <img th:src="@{/images/game_board.png}" class="img-fluid" alt="game board image">
 
                 <!-- Footer -->
                 <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
@@ -113,7 +114,8 @@
             e.preventDefault();
 
             $.get("/game/new-game").done(function (fragment) { // get from controller
-                var level = $("#input_level").val(1);
+                $("#input_level").val(1);
+                $("#input_age").val(18);
             });
 
             // Adding visual box

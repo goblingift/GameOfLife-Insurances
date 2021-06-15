@@ -81,12 +81,14 @@ All rights reserved
                                     console.log("Successful submitted answer- set user to next level!");
                                     // Update id counter
                                     $('#input_level').val(parseInt(level) + 1);
+                                    $('#input_age').val(parseInt(level) * 2 + 18);
                                 } else {
                                     console.log("Game over- set user to last level!");
                                     $.get('/game/last-level',
                                             function (data) {
                                                 console.log("Set user to last-level: " + data);
                                                 $('#input_level').val(data);
+                                                $('#input_age').val("GAME OVER");
                                             });
                                 }
                             }
