@@ -64,10 +64,14 @@ All rights reserved
                             {level: level, answer: answer},
                             function (response) {
 
-                                console.log("Successful submitted answer- will update UI for next card now!");
-
-                                // Update level counter
-                                $('#input_level').val(parseInt(level) + 1);
+                                console.log("Result after calling make decision:" + response);
+                                if (response) {
+                                    // Update id counter
+                                    $('#input_level').val(parseInt(level) + 1);
+                                } else {
+                                    console.log("An error occured- reload game page again");
+                                    window.location.href = '/game';
+                                }
                             }
                     );
 

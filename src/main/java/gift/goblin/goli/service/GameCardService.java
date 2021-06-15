@@ -125,6 +125,7 @@ public class GameCardService {
         logger.info("Starting new game for user: {}", username);
         UserGameStatus userGameStatus = userGameStatusRepository.findByUsername(username);
         userGameStatus.setLevel(1);
+        userGameStatus.setGameOver(false);
         userGameStatus.setActualCardId(null);
         userGameStatus.setActualCardInsuranceName(null);
         userGameStatus.setContractedInsurances(new ArrayList<>());
@@ -137,6 +138,10 @@ public class GameCardService {
         User user = userRepository.findByFullname(username);
         List<ContractedInsurance> contracts = contractedInsuranceRepository.findByUser(user);
         contracts.forEach(c -> contractedInsuranceRepository.delete(c));
+        
+        // also delete all damage cases of that user
+        List<DamageCase> damageCases = damageCaseRepository.findByUser(user);
+        damageCases.forEach(c -> damageCaseRepository.delete(c));
     }
     
     /**
@@ -179,6 +184,12 @@ public class GameCardService {
                     break;    
                 default:
                     yearlyCost = 0.0;
+            }
+            
+            
+            if (insurance == Insurance.LEGALPROTECTION_INSURANCE && answer == 1) {
+                logger.info("User choosed legalprotection-insurance with answer 1- set yearlyCosts to 0.00");
+                yearlyCost = 0.00;
             }
             
             // check if user already approved this insurance
@@ -274,6 +285,7 @@ public class GameCardService {
         
         logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
         userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatus.setSavedMoney(userGameStatus.getSavedMoney() + actionCardText.getSavedMoney());
         userGameStatus.addDamageCase(damageCase);
         userGameStatusRepository.save(userGameStatus);
     }
@@ -298,6 +310,7 @@ public class GameCardService {
         
         logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
         userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatus.setSavedMoney(userGameStatus.getSavedMoney() + actionCardText.getSavedMoney());
         userGameStatus.addDamageCase(damageCase);
         userGameStatusRepository.save(userGameStatus);
     }
@@ -322,6 +335,7 @@ public class GameCardService {
         
         logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
         userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatus.setSavedMoney(userGameStatus.getSavedMoney() + actionCardText.getSavedMoney());
         userGameStatus.addDamageCase(damageCase);
         userGameStatusRepository.save(userGameStatus);
     }
@@ -349,6 +363,7 @@ public class GameCardService {
         
         logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
         userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatus.setSavedMoney(userGameStatus.getSavedMoney() + actionCardText.getSavedMoney());
         userGameStatus.addDamageCase(damageCase);
         userGameStatusRepository.save(userGameStatus);
     }
@@ -375,6 +390,7 @@ public class GameCardService {
         
         logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
         userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatus.setSavedMoney(userGameStatus.getSavedMoney() + actionCardText.getSavedMoney());
         userGameStatus.addDamageCase(damageCase);
         userGameStatusRepository.save(userGameStatus);
     }
@@ -401,6 +417,7 @@ public class GameCardService {
         
         logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
         userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatus.setSavedMoney(userGameStatus.getSavedMoney() + actionCardText.getSavedMoney());
         userGameStatus.addDamageCase(damageCase);
         userGameStatusRepository.save(userGameStatus);
     }
@@ -426,6 +443,7 @@ public class GameCardService {
         
         logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
         userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatus.setSavedMoney(userGameStatus.getSavedMoney() + actionCardText.getSavedMoney());
         userGameStatus.addDamageCase(damageCase);
         userGameStatusRepository.save(userGameStatus);
     }
@@ -451,6 +469,7 @@ public class GameCardService {
         
         logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());
         userGameStatus.setPaidForClaims(userGameStatus.getPaidForClaims() + actionCardText.getDamageAmountToPay());
+        userGameStatus.setSavedMoney(userGameStatus.getSavedMoney() + actionCardText.getSavedMoney());
         userGameStatus.addDamageCase(damageCase);
         userGameStatusRepository.save(userGameStatus);
     }
@@ -481,6 +500,7 @@ public class GameCardService {
         logger.info("User {} died - set em to last level.", userGameStatus.getUsername());
         userGameStatus.setLevel(Level.getSIZE());
         userGameStatus.addDamageCase(damageCase);
+        userGameStatus.setSavedMoney(userGameStatus.getSavedMoney() + actionCardText.getSavedMoney());
         userGameStatusRepository.save(userGameStatus);
     }
     
@@ -552,6 +572,12 @@ public class GameCardService {
             newRandomActionCardId = newRandomActionCard.getId();
             nextInsuranceType = newRandomActionCard.getInsurance();
             pickedNewRandomCard = true;
+        }
+        
+        // TODO REMOVE - JUST FOR TESTING
+        if (userGameStatus.getLevel() == 24) {
+            newRandomActionCardId = "67136709-ba4e-4245-a0a0-cdbd241a9419";
+            nextInsuranceType = Insurance.TERMLIFE_INSURANCE;
         }
         
         switch (nextInsuranceType) {

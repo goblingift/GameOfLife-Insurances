@@ -17,4 +17,5 @@ public interface DamageCaseRepository extends MongoRepository<DamageCase, String
     
     List<DamageCase> findByUserAndActionCardType(User user, String actionCardType);
     
+    List<DamageCase> findByUser(User user);
 }

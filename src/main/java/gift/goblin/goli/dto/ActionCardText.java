@@ -44,7 +44,12 @@ public class ActionCardText {
      * a good insurance.
      */
     private double damageAmountToPay;
-
+    
+    /**
+     * The amount of money, which will get paid by the insurance.
+     */
+    private double savedMoney;
+    
     /**
      * This field can be filled with a specific property key, to display
      * different title for the damage amount sum label
@@ -61,13 +66,14 @@ public class ActionCardText {
     public ActionCardText() {
     }
 
-    public ActionCardText(String insuranceType, String actionCardId, String damageCaseDescription, String damageCaseAdditionalDescription, double damageAmount, double damageAmountToPay) {
+    public ActionCardText(String insuranceType, String actionCardId, String damageCaseDescription, String damageCaseAdditionalDescription, double damageAmount, double damageAmountToPay, double savedMoney) {
         this.insuranceType = insuranceType;
         this.actionCardId = actionCardId;
         this.damageCaseDescription = damageCaseDescription;
         this.damageCaseAdditionalDescription = damageCaseAdditionalDescription;
         this.damageAmount = damageAmount;
         this.damageAmountToPay = damageAmountToPay;
+        this.savedMoney = savedMoney;
     }
 
     public String getInsuranceType() {
@@ -133,10 +139,18 @@ public class ActionCardText {
     public void setDifferentTextDamageAmount(String differentTextDamageAmount) {
         this.differentTextDamageAmount = differentTextDamageAmount;
     }
-    
-    @Override
-    public String toString() {
-        return "ActionCardText{" + "insuranceType=" + insuranceType + ", actionCardId=" + actionCardId + ", damageCaseDescription=" + damageCaseDescription + ", damageCaseAdditionalDescription=" + damageCaseAdditionalDescription + ", damageAmount=" + damageAmount + ", damageAmountToPay=" + damageAmountToPay + ", differentTextDamageAmountSum=" + differentTextDamageAmountSum + ", differentTextDamageAmount=" + differentTextDamageAmount + '}';
+
+    public double getSavedMoney() {
+        return savedMoney;
     }
 
+    public void setSavedMoney(double savedMoney) {
+        this.savedMoney = savedMoney;
+    }
+
+    @Override
+    public String toString() {
+        return "ActionCardText{" + "insuranceType=" + insuranceType + ", actionCardId=" + actionCardId + ", damageCaseDescription=" + damageCaseDescription + ", damageCaseAdditionalDescription=" + damageCaseAdditionalDescription + ", damageAmount=" + damageAmount + ", damageAmountToPay=" + damageAmountToPay + ", savedMoney=" + savedMoney + ", differentTextDamageAmountSum=" + differentTextDamageAmountSum + ", differentTextDamageAmount=" + differentTextDamageAmount + '}';
+    }
+    
 }

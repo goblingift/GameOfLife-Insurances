@@ -6,11 +6,42 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-danger" id="btn_reset" data-toggle="modal" data-target="#modal-dialog-reset"><span class="btn-label"><i class="fas fa-reply fa-lg"></i></span> Neues Spiel</button>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
                         <button type="button" class="btn btn-labeled btn-primary" id="btn_home" onclick="location.href = '/home';"><span class="btn-label"><i class="fas fa-home fa-lg"></i></span> Hauptmenü</button>
                     </div>
                 </li>
             </ul>
         </nav>
+
+        <div class="modal fade" id="modal-dialog-reset" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Neues Spiel?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form_new_game" method="POST">
+                            <div class="form-group border p-1">
+                                <a>Dein Spielfortschritt zurücksetzen und neu beginnen?</a>
+                            </div>
+
+                            <div class="row">
+                                <div class="col" align="center">
+                                    <button name="submit" type="submit" class="btn btn-success" style="height: 60px; width: 50%;">Okay</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="container-fluid" style="margin-top: 20px;">
 
@@ -19,6 +50,8 @@
                     Game Over
                 </p>
             </div>
+
+            <div id="piechart" style="width: 900px; height: 500px;"></div>
 
             <div class="border">
                 <div class="container">
@@ -53,12 +86,13 @@
                     </div>
                 </div>
             </div>
-            
-            
+
+
             <div class="border" th:each="actObject,iterStat : ${summary.insuranceSummaries}">
-                <div class="container">
+                <div class="container insurance-div" th:data-insurance-name="${actObject.insuranceName}"
+                     th:data-insurance-fees="${actObject.paidCosts}">
                     <div class="row">
-                        <div class="col">
+                        <div class="col insurance-name">
                             <strong><a th:text="${actObject.insuranceName}" /></strong>
                         </div>
                     </div>
@@ -101,7 +135,10 @@
                     </div>
                     <div class="row" th:if="${actObject.agreed}">
                         <div class="col text-right">
-                            <a>Übernommene Schadenssummen durch Versicherung:</a>
+                            <div th:switch="${actObject.insuranceName}"> 
+                              <a th:case="Berufsunfähigkeitsversicherung">Beglichener Verdienstausfall (Von Versicherung erstattet):</a>
+                              <a th:case="*">Übernommene Schadenssummen durch Versicherung:</a> 
+                            </div>
                         </div>
                         <div class="col">
                             <span>[[${#numbers.formatCurrency(actObject.savedMoney)}]]</span>
@@ -109,7 +146,10 @@
                     </div>
                     <div class="row">
                         <div class="col text-right">
-                            <a>Selbst gezahlte Schadenssummen:</a>
+                            <div th:switch="${actObject.insuranceName}"> 
+                              <a th:case="Berufsunfähigkeitsversicherung">Verdienstausfall:</a>
+                              <a th:case="*">Selbst gezahlte Schadenssummen:</a> 
+                            </div>
                         </div>
                         <div class="col">
                             <span>[[${#numbers.formatCurrency(actObject.paidDamageCosts)}]]</span>
@@ -117,9 +157,68 @@
                     </div>
                 </div>
             </div>
-            
-            
+
+
         </div>
+
+        <script th:inline="javascript">
+
+
+            $("#form_new_game").submit(function (e) {
+                console.log("User triggered new-game reset.");
+                e.preventDefault();
+
+                $.get("/game/new-game").done(function (fragment) { // get from controller
+                    window.location.href = '/game';
+                });
+
+                return true;
+            });
+
+
+
+            google.charts.load('current', {'packages': ['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
+
+            function drawChart() {
+                // init google table
+                var dataTable = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Answer', type: 'string'},
+                        {label: 'Result', type: 'number'}
+                    ]
+                });
+
+                // get html table rows
+                var results = document.getElementsByClassName('insurance-div');
+
+                $('div.insurance-div').each(function (i, obj) {
+                    dataTable.addRow([
+                        {v: obj.getAttribute('data-insurance-name')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-fees'))}
+                    ]);
+                });
+
+                var dataSummary = google.visualization.data.group(
+                        dataTable,
+                        [0],
+                        [{'column': 1, 'aggregation': google.visualization.data.sum, 'type': 'number'}]
+                        );
+
+                var formatter = new google.visualization.NumberFormat({prefix: '€'});
+                formatter.format(dataSummary, 1);
+
+                var options = {
+                    title: 'Ausgaben für Versicherungsbeiträge',
+                    pieSliceText: 'value'
+                };
+
+                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+                chart.draw(dataSummary, options);
+            }
+
+
+        </script>
     </body>
 
 </html>

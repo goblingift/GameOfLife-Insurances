@@ -86,8 +86,10 @@ public class GameController {
         // If user is currently in a level where a decision can be made, handle it
         if (optLevel.get().getLevelType() == LevelType.DECISION || optLevel.get().getLevelType() == LevelType.INSURANCE) {
             gameContinues = gameCardService.handleUserDecision(gameCardService.getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
+        
         } else if (optLevel.get().getLevelType() == LevelType.ACTION) {
             gameContinues = gameCardService.handleActionCard(userGameStatus);
+        
         } else if (optLevel.get().getLevelType() == LevelType.INFO) {
             // TODO IMPLEMENT IT!
         }

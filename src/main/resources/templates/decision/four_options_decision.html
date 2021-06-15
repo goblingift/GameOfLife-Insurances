@@ -41,7 +41,7 @@ All rights reserved
                                         </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="answer" value="4" required="required" id="rb_answer_3">
+                                    <input class="form-check-input" type="radio" name="answer" value="4" required="required" id="rb_answer_4">
                                         <label class="form-check-label" for="rb_answer_4">
                                             <a th:text="#{${'decision.insurance.answer4.id.' + userGameStatus.actualCardId}}" />
                                         </label>
@@ -75,11 +75,15 @@ All rights reserved
                     $.post("/game/make-decision",
                             {level: level, answer: answer},
                             function (response) {
-
-                                console.log("Successful submitted answer- will update UI for next card now!");
-
-                                // Update id counter
-                                $('#input_level').val(parseInt(level) + 1);
+                                
+                                console.log("Result after calling make decision:" + response);
+                                if (response) {
+                                    // Update id counter
+                                    $('#input_level').val(parseInt(level) + 1);
+                                } else {
+                                    console.log("An error occured- reload game page again");
+                                    window.location.href = '/game';
+                                }
                             }
                     );
 

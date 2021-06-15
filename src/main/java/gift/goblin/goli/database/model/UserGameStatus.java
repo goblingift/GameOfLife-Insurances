@@ -27,6 +27,8 @@ public class UserGameStatus {
     private int level;
     private double paidForInsurances;
     private double paidForClaims;
+    // the money which were paid by the insurances
+    private double savedMoney;
     // this field can contain the actual action-cards type (name of Insurance) (to prevent user from picking new one)
     private String actualCardInsuranceName;
     // this field can contain the actual action-card id (to prevent user from picking new one)
@@ -147,6 +149,16 @@ public class UserGameStatus {
     public void setGameOver(boolean gameOver) {
         this.gameOver = gameOver;
     }
+
+    public double getSavedMoney() {
+        return savedMoney;
+    }
+
+    public void setSavedMoney(double savedMoney) {
+        this.savedMoney = savedMoney;
+    }
+    
+    
     
     @Override
     public int hashCode() {
@@ -195,7 +207,7 @@ public class UserGameStatus {
 
     @Override
     public String toString() {
-        return "UserGameStatus{" + "id=" + id + ", username=" + username + ", level=" + level + ", paidForInsurances=" + paidForInsurances + ", paidForClaims=" + paidForClaims + ", actualCardInsuranceName=" + actualCardInsuranceName + ", actualCardId=" + actualCardId + ", contractedInsurances=" + contractedInsurances + ", damageCases=" + damageCases + ", gameOver=" + gameOver + '}';
+        return "UserGameStatus{" + "id=" + id + ", username=" + username + ", level=" + level + ", paidForInsurances=" + paidForInsurances + ", paidForClaims=" + paidForClaims + ", savedMoney=" + savedMoney + ", actualCardInsuranceName=" + actualCardInsuranceName + ", actualCardId=" + actualCardId + ", contractedInsurances=" + contractedInsurances + ", damageCases=" + damageCases + ", gameOver=" + gameOver + '}';
     }
 
     

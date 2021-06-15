@@ -74,7 +74,7 @@ public class ActionCardTextConverter {
         }
 
         return new ActionCardText(Insurance.CAR_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay, actionCard.getDamageAmount() - damageAmountToPay);
     }
 
     
@@ -107,7 +107,7 @@ public class ActionCardTextConverter {
         }
 
         return new ActionCardText(Insurance.LIABILITY_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay, actionCard.getDamageAmount() - damageAmountToPay);
     }
     
     public ActionCardText convertToActionCardText(SeniorAccidentInsuranceActionCard actionCard, UserGameStatus userGameStatus) {
@@ -143,7 +143,7 @@ public class ActionCardTextConverter {
         }
 
         return new ActionCardText(Insurance.SENIORACCIDENT_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay, actionCard.getDamageAmount() - damageAmountToPay);
     }
     
     
@@ -177,7 +177,7 @@ public class ActionCardTextConverter {
         }
 
         return new ActionCardText(Insurance.LEGALPROTECTION_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay, actionCard.getDamageAmount() - damageAmountToPay);
     }
     
     public ActionCardText convertToActionCardText(DisabilityInsuranceActionCard actionCard, UserGameStatus userGameStatus) {
@@ -220,9 +220,9 @@ public class ActionCardTextConverter {
                     break;
             }
         }
-
+        double worstCaseDamageAmountSum = (yearsWithLessMoney * averageYearlyIncomeGermany2020) * 0.6;
         ActionCardText actionCardText = new ActionCardText(Insurance.DISABILITY_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, (yearsWithLessMoney * averageYearlyIncomeGermany2020) * 0.6, damageAmountToPay);
+                damageCaseAdditionalDescription, worstCaseDamageAmountSum, damageAmountToPay, worstCaseDamageAmountSum - damageAmountToPay);
         actionCardText.setDifferentTextDamageAmountSum(messageSource.getMessage("decision.insurance.result.label.damagesum.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
         actionCardText.setDifferentTextDamageAmount(messageSource.getMessage("decision.insurance.result.label.damage.id." + Insurance.DISABILITY_INSURANCE.getId(), null, Locale.GERMANY));
         return actionCardText;
@@ -260,7 +260,7 @@ public class ActionCardTextConverter {
         }
         
         return new ActionCardText(Insurance.HOUSEHOLD_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay, actionCard.getDamageAmount() - damageAmountToPay);
     }
     
     
@@ -295,7 +295,7 @@ public class ActionCardTextConverter {
         }
         
         return new ActionCardText(Insurance.HOME_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay, actionCard.getDamageAmount() - damageAmountToPay);
     }
     
         public ActionCardText convertToActionCardText(TermLifeInsuranceActionCard actionCard, UserGameStatus userGameStatus) {
@@ -327,7 +327,7 @@ public class ActionCardTextConverter {
         }
         
         ActionCardText actionCardText = new ActionCardText(Insurance.TERMLIFE_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, 0.00, compensationPayment);
+                damageCaseAdditionalDescription, 0.00, 0.00, compensationPayment);
         actionCardText.setDifferentTextDamageAmount(messageSource.getMessage("decision.insurance.result.label.damage.id." + Insurance.TERMLIFE_INSURANCE.getId(), null, Locale.GERMANY));
         return actionCardText;
     }
@@ -363,7 +363,7 @@ public class ActionCardTextConverter {
         }
         
         return new ActionCardText(Insurance.SMARTPHONE_INSURANCE.getName(), actionCard.getId(), actionCard.getText(),
-                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay);
+                damageCaseAdditionalDescription, actionCard.getDamageAmount(), damageAmountToPay, actionCard.getDamageAmount() - damageAmountToPay);
     }
     
 
