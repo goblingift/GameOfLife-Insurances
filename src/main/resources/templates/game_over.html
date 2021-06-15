@@ -50,8 +50,17 @@
                     Game Over
                 </p>
             </div>
+            
+            <div class="row">
+                <div class="col">
+                    <div id="piechart-insurance-costs" style="width: 900px; height: 500px;"></div>
+                </div>
+                <div class="col">
+                    <div id="piechart-insurance-refunds" style="width: 900px; height: 500px;"></div>
+                </div>
+            </div>
 
-            <div id="piechart" style="width: 900px; height: 500px;"></div>
+            
 
             <div class="border">
                 <div class="container">
@@ -90,7 +99,7 @@
 
             <div class="border" th:each="actObject,iterStat : ${summary.insuranceSummaries}">
                 <div class="container insurance-div" th:data-insurance-name="${actObject.insuranceName}"
-                     th:data-insurance-fees="${actObject.paidCosts}">
+                     th:data-insurance-fees="${actObject.paidCosts}" th:data-insurance-refunds="${actObject.savedMoney}">
                     <div class="row">
                         <div class="col insurance-name">
                             <strong><a th:text="${actObject.insuranceName}" /></strong>
@@ -178,43 +187,78 @@
 
 
             google.charts.load('current', {'packages': ['corechart']});
-            google.charts.setOnLoadCallback(drawChart);
+            google.charts.setOnLoadCallback(drawCharts);
 
-            function drawChart() {
-                // init google table
-                var dataTable = new google.visualization.DataTable({
+            function drawCharts() {
+                
+                
+                // draw pie chart with insurance costs
+                var dataTableInsuranceCosts = new google.visualization.DataTable({
                     cols: [
                         {label: 'Answer', type: 'string'},
                         {label: 'Result', type: 'number'}
                     ]
                 });
 
-                // get html table rows
-                var results = document.getElementsByClassName('insurance-div');
-
                 $('div.insurance-div').each(function (i, obj) {
-                    dataTable.addRow([
+                    dataTableInsuranceCosts.addRow([
                         {v: obj.getAttribute('data-insurance-name')},
                         {v: parseFloat(obj.getAttribute('data-insurance-fees'))}
                     ]);
                 });
 
-                var dataSummary = google.visualization.data.group(
-                        dataTable,
+                var dataSummaryInsuranceCosts = google.visualization.data.group(
+                        dataTableInsuranceCosts,
                         [0],
                         [{'column': 1, 'aggregation': google.visualization.data.sum, 'type': 'number'}]
                         );
 
                 var formatter = new google.visualization.NumberFormat({prefix: '€'});
-                formatter.format(dataSummary, 1);
+                formatter.format(dataSummaryInsuranceCosts, 1);
 
                 var options = {
                     title: 'Ausgaben für Versicherungsbeiträge',
                     pieSliceText: 'value'
                 };
 
-                var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-                chart.draw(dataSummary, options);
+                var insuranceCostChart = new google.visualization.PieChart(document.getElementById('piechart-insurance-costs'));
+                insuranceCostChart.draw(dataSummaryInsuranceCosts, options);
+                
+                
+                // draw pie chart with refund amounts of insurances
+                
+                var dataTableInsuranceRefunds = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Answer', type: 'string'},
+                        {label: 'Result', type: 'number'}
+                    ]
+                });
+
+                $('div.insurance-div').each(function (i, obj) {
+                    dataTableInsuranceRefunds.addRow([
+                        {v: obj.getAttribute('data-insurance-name')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-refunds'))}
+                    ]);
+                });
+
+                var dataSummaryInsuranceRefunds = google.visualization.data.group(
+                        dataTableInsuranceRefunds,
+                        [0],
+                        [{'column': 1, 'aggregation': google.visualization.data.sum, 'type': 'number'}]
+                        );
+
+                var formatter2 = new google.visualization.NumberFormat({prefix: '€'});
+                formatter2.format(dataSummaryInsuranceRefunds, 1);
+
+                var options2 = {
+                    title: 'Erstattete Schadensfälle',
+                    pieSliceText: 'value'
+                };
+
+                var insuranceCostChart = new google.visualization.PieChart(document.getElementById('piechart-insurance-refunds'));
+                insuranceCostChart.draw(dataSummaryInsuranceRefunds, options2);
+                
+                
             }
 
 
