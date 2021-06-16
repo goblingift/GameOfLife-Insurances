@@ -12,6 +12,7 @@ import java.util.List;
  */
 public class GameOverSummary {
     
+    private String username;
     private double paidCostsSum;
     private double savedMoneySum;
     private double paidDamageCostsSum;
@@ -25,6 +26,14 @@ public class GameOverSummary {
         this.savedMoneySum = savedMoneySum;
         this.paidDamageCostsSum = paidDamageCostsSum;
         this.insuranceSummaries = insuranceSummaries;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public double getPaidCostsSum() {

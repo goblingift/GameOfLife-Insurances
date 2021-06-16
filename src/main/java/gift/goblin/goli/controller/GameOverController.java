@@ -9,6 +9,7 @@ import gift.goblin.goli.dto.GameOverSummary;
 import gift.goblin.goli.enumerations.Level;
 import gift.goblin.goli.service.GameCardService;
 import gift.goblin.goli.service.GameSummaryService;
+import java.util.List;
 import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,10 +48,11 @@ public class GameOverController {
             return "redirect:/game";
         }
         
+        List<GameOverSummary> gameSummaryAllPlayers = gameSummaryService.generateGameSummaryAllPlayers();
         GameOverSummary gameOverSummary = gameSummaryService.generateGameSummary(username);
         logger.info("Adding gameOverSummary to model: {}", gameOverSummary);
         model.addAttribute("summary", gameOverSummary);
-        
+        model.addAttribute("allPlayerSummary", gameSummaryAllPlayers);
         return "game_over";
     }
     

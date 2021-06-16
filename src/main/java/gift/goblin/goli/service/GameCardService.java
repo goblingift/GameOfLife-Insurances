@@ -574,12 +574,6 @@ public class GameCardService {
             pickedNewRandomCard = true;
         }
         
-        // TODO REMOVE - JUST FOR TESTING
-        if (userGameStatus.getLevel() == 24) {
-            newRandomActionCardId = "67136709-ba4e-4245-a0a0-cdbd241a9419";
-            nextInsuranceType = Insurance.TERMLIFE_INSURANCE;
-        }
-        
         switch (nextInsuranceType) {
             case SMARTPHONE_INSURANCE:
                 Optional<SmartphoneInsuranceActionCard> optSmartphoneInsuranceActionCard = smartphoneInsuranceActionCardRepository.findById(newRandomActionCardId);

@@ -6,13 +6,20 @@ package gift.goblin.goli.controller;
 
 import gift.goblin.goli.WebSecurityConfig;
 import gift.goblin.goli.database.model.UserGameStatus;
+import gift.goblin.goli.database.model.actioncards.ActionCard;
+import gift.goblin.goli.database.repository.ActionCardRepository;
+import gift.goblin.goli.database.repository.UserGameStatusRepository;
 import gift.goblin.goli.dto.ActionCardText;
 import gift.goblin.goli.dto.DecisionAnswer;
 import gift.goblin.goli.enumerations.Insurance;
 import gift.goblin.goli.enumerations.Level;
 import gift.goblin.goli.enumerations.LevelType;
 import gift.goblin.goli.service.GameCardService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +48,12 @@ public class GameController {
 
     @Autowired
     private GameCardService gameCardService;
+    
+    @Autowired
+    private ActionCardRepository actionCardRepository;
+    
+    @Autowired
+    private UserGameStatusRepository userGameStatusRepository;
 
     @GetMapping
     public String renderGameBoard(HttpSession session, Model model) {
@@ -83,8 +96,12 @@ public class GameController {
             logger.warn("User tried to make decision for unknown level: {}", decisionAnswer.getLevel());
             return gameContinues;
         }
-        // If user is currently in a level where a decision can be made, handle it
-        if (optLevel.get().getLevelType() == LevelType.DECISION || optLevel.get().getLevelType() == LevelType.INSURANCE) {
+        
+        // If user just approves a neutral actioncard- do it
+        if (decisionAnswer.getAnswer() == 999) {
+            logger.info("User approved neutral message. Continue game.");
+        } else if (optLevel.get().getLevelType() == LevelType.DECISION || optLevel.get().getLevelType() == LevelType.INSURANCE) {
+            // If user is currently in a level where a decision can be made, handle it
             gameContinues = gameCardService.handleUserDecision(gameCardService.getUsernameFromSession(session), decisionAnswer.getLevel(), decisionAnswer.getAnswer());
         
         } else if (optLevel.get().getLevelType() == LevelType.ACTION) {
@@ -144,10 +161,18 @@ public class GameController {
                 case INFO:
                     return "/decision/simple_info :: replace_fragment";
                 case ACTION:
-                    ActionCardText actionCardText = gameCardService.getNewRandomActionCard(userGameStatus);
-                    logger.info("Will add new actionCardText to model: {}", actionCardText);
-                    model.addAttribute("actionCardText", actionCardText);
-                    return "/decision/action_card :: replace_fragment";
+                    
+                    Optional<ActionCard> optNeutralActionCard = rollDicesForNeutralActionCard(userGameStatus);
+                    if (optNeutralActionCard.isPresent()) {
+                        ActionCard actionCard = optNeutralActionCard.get();
+                        model.addAttribute("actionCard", actionCard);
+                        return "/decision/neutral_actioncard";
+                    } else {
+                        ActionCardText actionCardText = gameCardService.getNewRandomActionCard(userGameStatus);
+                        logger.info("Will add new actionCardText to model: {}", actionCardText);
+                        model.addAttribute("actionCardText", actionCardText);
+                        return "/decision/action_card :: replace_fragment";
+                    }
                 case GAMEOVER:
                     return "/decision/game_over_dialog :: replace_fragment";
                 default:
@@ -158,6 +183,36 @@ public class GameController {
         }
         
         return null;
+    }
+    
+    private Optional<ActionCard> rollDicesForNeutralActionCard(UserGameStatus userGameStatus) {
+        Optional<ActionCard> returnValue = Optional.empty();
+        
+        Random rand = new Random();
+        int randomNum = rand.nextInt(10) + 1;
+        logger.info("Rolled dice for neutral actioncard: {}", randomNum);
+        
+        if (randomNum == 5) {
+            List<ActionCard> allActionCards = actionCardRepository.findAll();
+            List<ActionCard> alreadyDrawnActionCards = userGameStatus.getNeutralActionCards();
+            
+            List<ActionCard> newActionCards = allActionCards.stream().filter(ac -> !alreadyDrawnActionCards.contains(ac)).collect(Collectors.toList());
+            
+            if (newActionCards != null && !newActionCards.isEmpty()) {
+                ActionCard nextCard = newActionCards.get(0);
+                returnValue = Optional.of(nextCard);
+                userGameStatus.addActionCard(nextCard);
+                userGameStatusRepository.save(userGameStatus);
+            } else {
+                ActionCard nextCard = allActionCards.get(0);
+                returnValue = Optional.of(nextCard);
+                userGameStatus.setNeutralActionCards(new ArrayList<>());
+                userGameStatus.addActionCard(nextCard);
+                userGameStatusRepository.save(userGameStatus);
+            }
+        }
+        
+        return returnValue;
     }
     
     @GetMapping("/game-over")

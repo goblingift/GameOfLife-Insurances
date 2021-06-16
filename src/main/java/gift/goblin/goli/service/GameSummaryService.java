@@ -10,6 +10,7 @@ import gift.goblin.goli.database.model.User;
 import gift.goblin.goli.database.model.UserGameStatus;
 import gift.goblin.goli.database.repository.ContractedInsuranceRepository;
 import gift.goblin.goli.database.repository.DamageCaseRepository;
+import gift.goblin.goli.database.repository.UserGameStatusRepository;
 import gift.goblin.goli.database.repository.UserRepository;
 import gift.goblin.goli.dto.GameOverSummary;
 import gift.goblin.goli.dto.InsuranceSummary;
@@ -46,9 +47,34 @@ public class GameSummaryService {
 
     @Autowired
     UserRepository userRepository;
+    
+    @Autowired
+    UserGameStatusRepository userGameStatusRepository;
 
     @Autowired
     private MessageSource messageSource;
+    
+    /**
+     * Will generate a List with GameOverSummaries for all players.
+     * The single GameOverSummary will have null values for the insuranceSummaries,
+     * caused by performance reasons.
+     * @return list with all user game stats.
+     */
+    public List<GameOverSummary> generateGameSummaryAllPlayers() {
+        
+        List<GameOverSummary> returnValue = new ArrayList<>();
+        List<UserGameStatus> players = userGameStatusRepository.findAll();
+        for (UserGameStatus actPlayer : players) {
+            GameOverSummary actGameOverSummary = new GameOverSummary();
+            actGameOverSummary.setUsername(actPlayer.getUsername());
+            actGameOverSummary.setPaidCostsSum(actPlayer.getPaidForInsurances());
+            actGameOverSummary.setPaidDamageCostsSum(actPlayer.getPaidForClaims());
+            actGameOverSummary.setSavedMoneySum(actPlayer.getSavedMoney());
+            returnValue.add(actGameOverSummary);
+        }
+        
+        return returnValue;
+    }
 
     public GameOverSummary generateGameSummary(String username) {
 
@@ -58,6 +84,7 @@ public class GameSummaryService {
         GameOverSummary gameOverSummary = new GameOverSummary();
         gameOverSummary.setPaidCostsSum(userGameStatus.getPaidForInsurances());
         gameOverSummary.setPaidDamageCostsSum(userGameStatus.getPaidForClaims());
+        gameOverSummary.setUsername(username);
         double savedMoney = 0.00;
         List<InsuranceSummary> insuranceSummaries = new ArrayList<>();
 

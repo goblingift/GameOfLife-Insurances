@@ -58,6 +58,9 @@
                 <div class="col">
                     <div id="piechart-insurance-refunds" style="width: 900px; height: 500px;"></div>
                 </div>
+                <div class="col">
+                    <div id="barchart-allplayers" style="width: 900px; height: 500px;"></div>
+                </div>
             </div>
 
             
@@ -96,6 +99,11 @@
                 </div>
             </div>
 
+            <div th:each="actObject,iterStat : ${allPlayerSummary}" style="display:none">
+                <div class="container allplayer-div" th:data-username="${actObject.username}"
+                     th:data-insurance-fees="${actObject.paidCostsSum}" th:data-insurance-refunds="${actObject.savedMoneySum}" th:data-insurance-claims="${actObject.paidDamageCostsSum}">
+                </div>
+            </div>
 
             <div class="border" th:each="actObject,iterStat : ${summary.insuranceSummaries}">
                 <div class="container insurance-div" th:data-insurance-name="${actObject.insuranceName}"
@@ -258,6 +266,35 @@
                 var insuranceCostChart = new google.visualization.PieChart(document.getElementById('piechart-insurance-refunds'));
                 insuranceCostChart.draw(dataSummaryInsuranceRefunds, options2);
                 
+                
+                // draw barchart for player comparison
+                
+                var container = document.getElementById('barchart-allplayers');
+                var chart = new google.visualization.BarChart(container);
+
+                
+                var dataTableInsuranceRefunds = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Answer', type: 'string'},
+                        {label: 'Result', type: 'number'}
+                    ]
+                });
+                
+                dataTableAllPlayers.addColumn('string', 'Person');
+                $('div.allplayer-div').each(function (i, obj) {
+                    dataTableAllPlayers.addColumn('string', obj.getAttribute('data-username'));
+                });
+
+                dataTableAllPlayers.addRows([
+                  ['Time', 10, 14, 16]
+                ]);
+
+                chart.draw(dataTableAllPlayers, {
+                  colors: ["#0d2713", "#8b9061", "#4cb274", "#898cca", "#02a4cf", "#d78e5d", "#87bd16", "#84b971", "#bacabe", "#766499", "#e51d85", "#287066", "#792b1b", "#401bec", "#0fdc3d", "#f6ade7", "#8fb4ad", "#de8456", "#16be99"],
+                  bar: {
+                    gap: 4
+                  }
+                });
                 
             }
 

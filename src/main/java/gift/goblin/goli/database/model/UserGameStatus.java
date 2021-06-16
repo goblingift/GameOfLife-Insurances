@@ -4,9 +4,9 @@
  */
 package gift.goblin.goli.database.model;
 
+import gift.goblin.goli.database.model.actioncards.ActionCard;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.data.annotation.Id;
@@ -40,6 +40,9 @@ public class UserGameStatus {
     private List<DamageCase> damageCases = new ArrayList<>();
     // defines if the game is over. If its true, user has to restart game
     private boolean gameOver;
+    
+    @DBRef
+    private List<ActionCard> neutralActionCards = new ArrayList<>();
 
     public UserGameStatus(String username, int level) {
         this.username = username;
@@ -47,6 +50,10 @@ public class UserGameStatus {
     }
 
     public UserGameStatus() {
+    }
+    
+    public void addActionCard(ActionCard actionCard) {
+        neutralActionCards.add(actionCard);
     }
     
     /**
@@ -157,8 +164,14 @@ public class UserGameStatus {
     public void setSavedMoney(double savedMoney) {
         this.savedMoney = savedMoney;
     }
-    
-    
+
+    public List<ActionCard> getNeutralActionCards() {
+        return neutralActionCards;
+    }
+
+    public void setNeutralActionCards(List<ActionCard> neutralActionCards) {
+        this.neutralActionCards = neutralActionCards;
+    }
     
     @Override
     public int hashCode() {

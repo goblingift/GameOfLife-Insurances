@@ -4,6 +4,7 @@
  */
 package gift.goblin.goli.controller;
 
+import gift.goblin.goli.database.model.actioncards.ActionCard;
 import gift.goblin.goli.database.model.actioncards.CarInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.DisabilityInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.HomeInsuranceActionCard;
@@ -13,6 +14,7 @@ import gift.goblin.goli.database.model.actioncards.LiabilityInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.SeniorAccidentInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.SmartphoneInsuranceActionCard;
 import gift.goblin.goli.database.model.actioncards.TermLifeInsuranceActionCard;
+import gift.goblin.goli.database.repository.ActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.CarInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.DisabilityInsuranceActionCardRepository;
 import gift.goblin.goli.database.repository.actioncards.HomeInsuranceActionCardRepository;
@@ -79,7 +81,15 @@ public class CardController {
     @Autowired
     LegalProtectionInsuranceActionCardRepository legalProtectionInsuranceActionCardRepository;
 
-    @GetMapping(value = {"/create"})
+    @Autowired
+    ActionCardRepository actionCardRepository;
+    
+    /**
+     * Will render the page for users to create new Insurance Actioncards.
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/create")
     public String renderCreateCard(Model model) {
         logger.info("User opened add-actioncard.");
 
@@ -90,6 +100,28 @@ public class CardController {
     private Map<Integer, String> getAvailableInsurances() {
         return Insurance.getValues().stream()
                 .collect(Collectors.toMap((Insurance i) -> i.getId(), (Insurance i) -> i.getName()));
+    }
+
+    /**
+     * Will render the page to create new neutral/positive actioncard. NO Insurance-Actioncard!
+     * @param model
+     * @return 
+     */
+    @GetMapping(value = "/create-neutral-card")
+    public String rendercreateNeutralCard(Model model) {
+        logger.info("User opened add neutral actioncard.");
+        
+        return "add_neutral_actioncard";
+    }
+    
+    @PostMapping(value = "/add-neutral-actioncard")
+    public String addNeutralActionCard(ActionCard actionCard, HttpSession session, Model model) {
+        
+        actionCard.setId(UUID.randomUUID().toString());
+        logger.info("Adding new neutral actioncard: {}", actionCard);
+        actionCardRepository.save(actionCard);
+        
+        return "redirect:" + BASE_URL_CARDS + "/create-neutral-card";
     }
 
     /**
@@ -157,7 +189,7 @@ public class CardController {
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
-        return renderCreateCard(model);
+        return "redirect:" + BASE_URL_CARDS + "/create";
     }
 
     @PostMapping(value = {"/add/home-insurance"})
@@ -169,7 +201,7 @@ public class CardController {
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
-        return renderCreateCard(model);
+        return "redirect:" + BASE_URL_CARDS + "/create";
     }
 
     @PostMapping(value = {"/add/termlife-insurance"})
@@ -181,7 +213,7 @@ public class CardController {
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
-        return renderCreateCard(model);
+        return "redirect:" + BASE_URL_CARDS + "/create";
     }
 
     @PostMapping(value = {"/add/senioraccident-insurance"})
@@ -193,7 +225,7 @@ public class CardController {
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
-        return renderCreateCard(model);
+        return "redirect:" + BASE_URL_CARDS + "/create";
     }
 
     @PostMapping(value = {"/add/legalprotection-insurance"})
@@ -205,7 +237,7 @@ public class CardController {
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
-        return renderCreateCard(model);
+        return "redirect:" + BASE_URL_CARDS + "/create";
     }
 
     /**
@@ -226,7 +258,7 @@ public class CardController {
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
-        return renderCreateCard(model);
+        return "redirect:" + BASE_URL_CARDS + "/create";
     }
 
     /**
@@ -247,7 +279,7 @@ public class CardController {
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
-        return renderCreateCard(model);
+        return "redirect:" + BASE_URL_CARDS + "/create";
     }
 
     @PostMapping(value = {"/add/disability-insurance"})
@@ -259,7 +291,7 @@ public class CardController {
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
-        return renderCreateCard(model);
+        return "redirect:" + BASE_URL_CARDS + "/create";
     }
 
     @PostMapping(value = {"/add/household-insurance"})
@@ -271,7 +303,7 @@ public class CardController {
         logger.info("Successful created new actionCard in database: {}", savedActionCard);
 
         model.addAttribute("display_success", true);
-        return renderCreateCard(model);
+        return "redirect:" + BASE_URL_CARDS + "/create";
     }
 
 }
