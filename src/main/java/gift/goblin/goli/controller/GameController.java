@@ -152,29 +152,29 @@ public class GameController {
                     userGameStatus = gameCardService.addInsuranceToUserGameStatus(userGameStatus, optLevel.get().getLevel());
                     model.addAttribute("userGameStatus", userGameStatus);
                     if (userGameStatus.getActualCardInsuranceName() == Insurance.LEGALPROTECTION_INSURANCE.getName()) {
-                        return "/decision/four_options_decision :: replace_fragment";
+                        return "decision/four_options_decision :: replace_fragment";
                     } else {
-                        return "/decision/triple_options_decision :: replace_fragment";
+                        return "decision/triple_options_decision :: replace_fragment";
                     }
                 case DECISION:
-                    return "/decision/two_options_decision :: replace_fragment";
+                    return "decision/two_options_decision :: replace_fragment";
                 case INFO:
-                    return "/decision/simple_info :: replace_fragment";
+                    return "decision/simple_info :: replace_fragment";
                 case ACTION:
                     
                     Optional<ActionCard> optNeutralActionCard = rollDicesForNeutralActionCard(userGameStatus);
                     if (optNeutralActionCard.isPresent()) {
                         ActionCard actionCard = optNeutralActionCard.get();
                         model.addAttribute("actionCard", actionCard);
-                        return "/decision/neutral_actioncard";
+                        return "decision/neutral_actioncard";
                     } else {
                         ActionCardText actionCardText = gameCardService.getNewRandomActionCard(userGameStatus);
                         logger.info("Will add new actionCardText to model: {}", actionCardText);
                         model.addAttribute("actionCardText", actionCardText);
-                        return "/decision/action_card :: replace_fragment";
+                        return "decision/action_card :: replace_fragment";
                     }
                 case GAMEOVER:
-                    return "/decision/game_over_dialog :: replace_fragment";
+                    return "decision/game_over_dialog :: replace_fragment";
                 default:
                     throw new AssertionError();
             }

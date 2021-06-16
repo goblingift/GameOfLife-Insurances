@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.context.WebApplicationContext;
 
 @SpringBootApplication
@@ -23,6 +24,12 @@ public class GameOfLifeInsuranceApplication {
     public GameStatus getGameStatus() {
         logger.info("Created new GameStatus-object.");
         return new GameStatus(true, true);
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder;
     }
 
 }
