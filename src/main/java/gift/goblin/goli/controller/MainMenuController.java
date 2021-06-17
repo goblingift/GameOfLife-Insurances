@@ -39,7 +39,7 @@ public class MainMenuController {
             logger.info("User has admin-role, display more options for em.");
             model.addAttribute("isAdmin", true);
         }
-        
+
         model.addAttribute("createCards", gameStatus.isCreateCards());
         model.addAttribute("gameStarted", gameStatus.isGameEnabled());
         model.addAttribute("build_artifact", buildProperties.getArtifact());
@@ -53,6 +53,32 @@ public class MainMenuController {
         } else {
             return false;
         }
+    }
+
+    @GetMapping(value = "/start-card-creation")
+    public String startCardCreation(Model model, Authentication authentication) {
+
+        if (isUserAdmin(authentication)) {
+            logger.info("Start card creation now.");
+            gameStatus.setCreateCards(true);
+        } else {
+            logger.warn("User is no admin- wont start card-creation now.");
+        }
+
+        return "redirect:/home";
+    }
+
+    @GetMapping(value = "/stop-card-creation")
+    public String stopCardCreation(Model model, Authentication authentication) {
+
+        if (isUserAdmin(authentication)) {
+            logger.info("Stop card creation now.");
+            gameStatus.setCreateCards(false);
+        } else {
+            logger.warn("User is no admin- wont stop card-creation now.");
+        }
+
+        return "redirect:/home";
     }
 
     @GetMapping(value = "/start-game")
