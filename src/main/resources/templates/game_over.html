@@ -22,9 +22,6 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Neues Spiel?</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"></span>
-                        </button>
                     </div>
                     <div class="modal-body">
                         <form id="form_new_game" method="POST">
@@ -46,24 +43,33 @@
         <div class="container-fluid" style="margin-top: 20px;">
 
             <div>
-                <p class="text-headline">
-                    Game Over
-                </p>
+                <div class="alert alert-success" role="alert">
+                  <h4 class="alert-heading"><a th:text="#{gameover.title}" /></h4>
+                  <p><a th:text="#{gameover.subtitle}" /></p>
+                  <hr>
+                  <p class="mb-0"><a th:text="#{gameover.subtitle2}" /></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div id="piechart-insurance-costs" style="width: 600px; height: 700px;"></div>
+                </div>
+                <div class="col">
+                    <div id="piechart-insurance-refunds" style="width: 600px; height: 700px;"></div>
+                </div>
+                <div class="col">
+                    <div id="piechart-insurance-claims" style="width: 600px; height: 700px;"></div>
+                </div>
             </div>
             
             <div class="row">
                 <div class="col">
-                    <div id="piechart-insurance-costs" style="width: 900px; height: 500px;"></div>
-                </div>
-                <div class="col">
-                    <div id="piechart-insurance-refunds" style="width: 900px; height: 500px;"></div>
-                </div>
-                <div class="col">
-                    <div id="barchart-allplayers" style="width: 900px; height: 500px;"></div>
+                    <div id="barchart-allplayers" style="width: 1900px; height: 600px;"></div>
                 </div>
             </div>
 
-            
+            <div class="mb-5"></div>
 
             <div class="border">
                 <div class="container">
@@ -107,7 +113,7 @@
 
             <div class="border" th:each="actObject,iterStat : ${summary.insuranceSummaries}">
                 <div class="container insurance-div" th:data-insurance-name="${actObject.insuranceName}"
-                     th:data-insurance-fees="${actObject.paidCosts}" th:data-insurance-refunds="${actObject.savedMoney}">
+                     th:data-insurance-fees="${actObject.paidCosts}" th:data-insurance-refunds="${actObject.savedMoney}" th:data-insurance-claims="${actObject.paidDamageCosts}">
                     <div class="row">
                         <div class="col insurance-name">
                             <strong><a th:text="${actObject.insuranceName}" /></strong>
@@ -153,8 +159,8 @@
                     <div class="row" th:if="${actObject.agreed}">
                         <div class="col text-right">
                             <div th:switch="${actObject.insuranceName}"> 
-                              <a th:case="Berufsunfähigkeitsversicherung">Beglichener Verdienstausfall (Von Versicherung erstattet):</a>
-                              <a th:case="*">Übernommene Schadenssummen durch Versicherung:</a> 
+                                <a th:case="Berufsunfähigkeitsversicherung">Beglichener Verdienstausfall (Von Versicherung erstattet):</a>
+                                <a th:case="*">Übernommene Schadenssummen durch Versicherung:</a> 
                             </div>
                         </div>
                         <div class="col">
@@ -164,8 +170,8 @@
                     <div class="row">
                         <div class="col text-right">
                             <div th:switch="${actObject.insuranceName}"> 
-                              <a th:case="Berufsunfähigkeitsversicherung">Verdienstausfall:</a>
-                              <a th:case="*">Selbst gezahlte Schadenssummen:</a> 
+                                <a th:case="Berufsunfähigkeitsversicherung">Verdienstausfall:</a>
+                                <a th:case="*">Selbst gezahlte Schadenssummen:</a> 
                             </div>
                         </div>
                         <div class="col">
@@ -195,11 +201,12 @@
 
 
             google.charts.load('current', {'packages': ['corechart']});
+            google.charts.load('current', {'packages': ['bar']});
             google.charts.setOnLoadCallback(drawCharts);
 
             function drawCharts() {
-                
-                
+
+
                 // draw pie chart with insurance costs
                 var dataTableInsuranceCosts = new google.visualization.DataTable({
                     cols: [
@@ -226,15 +233,16 @@
 
                 var options = {
                     title: 'Ausgaben für Versicherungsbeiträge',
-                    pieSliceText: 'value'
+                    pieSliceText: 'value',
+                    legend: {position: 'top', maxLines: 10}
                 };
 
                 var insuranceCostChart = new google.visualization.PieChart(document.getElementById('piechart-insurance-costs'));
                 insuranceCostChart.draw(dataSummaryInsuranceCosts, options);
-                
-                
+
+                // ---------------------------------------------------
                 // draw pie chart with refund amounts of insurances
-                
+
                 var dataTableInsuranceRefunds = new google.visualization.DataTable({
                     cols: [
                         {label: 'Answer', type: 'string'},
@@ -260,45 +268,81 @@
 
                 var options2 = {
                     title: 'Erstattete Schadensfälle',
-                    pieSliceText: 'value'
+                    pieSliceText: 'value',
+                    legend: {position: 'top', maxLines: 10}
                 };
 
                 var insuranceCostChart = new google.visualization.PieChart(document.getElementById('piechart-insurance-refunds'));
                 insuranceCostChart.draw(dataSummaryInsuranceRefunds, options2);
-                
-                
-                // draw barchart for player comparison
-                
-                var container = document.getElementById('barchart-allplayers');
-                var chart = new google.visualization.BarChart(container);
 
-                
-                var dataTableInsuranceRefunds = new google.visualization.DataTable({
+                // ---------------------------------------------------
+                // draw pie chart with refund amounts of insurances
+
+                var dataTableInsuranceClaims = new google.visualization.DataTable({
                     cols: [
                         {label: 'Answer', type: 'string'},
                         {label: 'Result', type: 'number'}
                     ]
                 });
+
+                $('div.insurance-div').each(function (i, obj) {
+                    dataTableInsuranceClaims.addRow([
+                        {v: obj.getAttribute('data-insurance-name')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-claims'))}
+                    ]);
+                });
+
+                var dataSummaryInsuranceClaims = google.visualization.data.group(
+                        dataTableInsuranceClaims,
+                        [0],
+                        [{'column': 1, 'aggregation': google.visualization.data.sum, 'type': 'number'}]
+                        );
+
+                var formatter3 = new google.visualization.NumberFormat({prefix: '€'});
+                formatter3.format(dataSummaryInsuranceClaims, 1);
+
+                var options3 = {
+                    title: 'Selbst gezahlte Schadensfälle',
+                    pieSliceText: 'value',
+                    legend: {position: 'top', maxLines: 10}
+                };
+
+                var insuranceClaimsChart = new google.visualization.PieChart(document.getElementById('piechart-insurance-claims'));
+                insuranceClaimsChart.draw(dataSummaryInsuranceClaims, options3);
+
+                // ---------------------------------------------------
+                // draw barchart for player comparison
+                var dataTableAllPlayers = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Spielername', type: 'string'},
+                        {label: 'Bezahlte Versicherungsbeiträge', type: 'number'},
+                        {label: 'Erstattete Versicherungsschäden', type: 'number'},
+                        {label: 'Bezahlte Versicherungsschäden', type: 'number'}
+                    ]
+                });
                 
-                dataTableAllPlayers.addColumn('string', 'Person');
                 $('div.allplayer-div').each(function (i, obj) {
-                    dataTableAllPlayers.addColumn('string', obj.getAttribute('data-username'));
+                    dataTableAllPlayers.addRow([
+                        {v: obj.getAttribute('data-username')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-fees'))},
+                        {v: parseFloat(obj.getAttribute('data-insurance-refunds'))},
+                        {v: parseFloat(obj.getAttribute('data-insurance-claims'))}
+                    ]);
                 });
 
-                dataTableAllPlayers.addRows([
-                  ['Time', 10, 14, 16]
-                ]);
-
-                chart.draw(dataTableAllPlayers, {
-                  colors: ["#0d2713", "#8b9061", "#4cb274", "#898cca", "#02a4cf", "#d78e5d", "#87bd16", "#84b971", "#bacabe", "#766499", "#e51d85", "#287066", "#792b1b", "#401bec", "#0fdc3d", "#f6ade7", "#8fb4ad", "#de8456", "#16be99"],
-                  bar: {
-                    gap: 4
-                  }
-                });
+                var formatter4 = new google.visualization.NumberFormat({prefix: '€'});
+                formatter4.format(dataTableAllPlayers, 1);
+                formatter4.format(dataTableAllPlayers, 2);
+                formatter4.format(dataTableAllPlayers, 3);
                 
+                var options4 = {
+                    title: 'Vergleich mit anderen Mitspielern'
+                };
+                
+                var chart = new google.charts.Bar(document.getElementById('barchart-allplayers'));
+                chart.draw(dataTableAllPlayers, google.charts.Bar.convertOptions(options4));
             }
-
-
+            
         </script>
     </body>
 

@@ -131,6 +131,7 @@ public class GameCardService {
         userGameStatus.setContractedInsurances(new ArrayList<>());
         userGameStatus.setPaidForClaims(0);
         userGameStatus.setPaidForInsurances(0);
+        userGameStatus.setSavedMoney(0);
         userGameStatus.setDamageCases(new ArrayList<>());
         userGameStatusRepository.save(userGameStatus);
         

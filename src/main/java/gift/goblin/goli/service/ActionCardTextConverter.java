@@ -185,7 +185,7 @@ public class ActionCardTextConverter {
         String damageCaseAdditionalDescription = "";
         double damageAmountToPay = 0.00;
         double averageYearlyIncomeGermany2020 = 47_700.00;
-        int yearsWithLessMoney = (int) Math.round(actionCard.getDamageAmount());
+        int yearsWithLessMoney = (int)actionCard.getDamageAmount();
         int yearsToLive = Level.getSIZE() - userGameStatus.getLevel();
         // player can only get as many years less money as they live
         if (yearsWithLessMoney > yearsToLive) {

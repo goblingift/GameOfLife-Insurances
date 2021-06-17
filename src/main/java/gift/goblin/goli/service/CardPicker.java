@@ -147,7 +147,8 @@ public class CardPicker {
             allActionCards.addAll(carInsuranceActionCards);
         }
         
-        if (userGameStatus.getLevel() > Insurance.DISABILITY_INSURANCE.getLevel()) {
+        // This insurance-cases shouldnt appear after you are senior (68years)
+        if (userGameStatus.getLevel() > Insurance.DISABILITY_INSURANCE.getLevel() && userGameStatus.getLevel() < 25) {
             List<InsuranceWithType> disabilityInsuranceActionCards = disabilityInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.DISABILITY_INSURANCE)).collect(Collectors.toList());
             allActionCards.addAll(disabilityInsuranceActionCards);
         }

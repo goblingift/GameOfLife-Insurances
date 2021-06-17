@@ -9,9 +9,13 @@
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="inputGroup-sizing-default">Alter:</span>
                         <input disabled style="display:none" type="text" th:value="${userGameStatus.level}" id="input_level" class="form-control">
-                        <input disabled type="text" th:value="${userGameStatus.level * 2 + 18}" id="input_age" class="form-control">
+                        <input style="width: 50px;" disabled type="text" th:value="${userGameStatus.level * 2 + 18}" id="input_age" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Jahre</span>
+                        </div>
                     </div>
                 </li>
+                
             </ul>
 
             <ul class="navbar-nav mx-auto">
@@ -48,9 +52,6 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Neues Spiel?</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true"></span>
-                        </button>
                     </div>
                     <div class="modal-body">
                         <form id="form_new_game" method="POST">

@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -61,8 +62,13 @@ public class LoginController {
     public String registration(HttpSession session, @ModelAttribute("userForm") UserCredentials userForm, BindingResult bindingResult, Model model) {
         logger.info("User submitted login-form: {}", userForm);
         
-
-        UserDetails userDetails = userService.loadUserByUsername(userForm.getUsername());
+        UserDetails userDetails = null;
+        try {
+            userDetails = userService.loadUserByUsername(userForm.getUsername());
+        } catch (UsernameNotFoundException e) {
+            logger.warn("Couldnt find user by username: {}", userForm.getUsername());
+        }
+        
         if (userDetails != null) {
             Authentication auth = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(auth);
@@ -77,7 +83,7 @@ public class LoginController {
             
             return "redirect:/home";
         } else {
-            return "redirect:/login";
+            return renderRegistrationForm(model);
         }
         
     }
