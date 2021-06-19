@@ -491,7 +491,7 @@ public class GameCardService {
         ActionCardText actionCardText = actionCardTextConverter.convertToActionCardText(optActionCard.get(), userGameStatus);
         
         DamageCase damageCase = new DamageCase(UUID.randomUUID().toString(), userRepository.findByFullname(userGameStatus.getUsername()), actionCardId, Insurance.TERMLIFE_INSURANCE.getName(),
-                actionCardText.getDamageAmount(), actionCardText.getDamageAmountToPay(), actionCardText.getDamageAmount() - actionCardText.getDamageAmountToPay());
+                actionCardText.getDamageAmount(), actionCardText.getDamageAmountToPay(), actionCardText.getSavedMoney());
         damageCaseRepository.save(damageCase);
         
         logger.info("User {} has to pay {} for a damage-case in level {}", userGameStatus.getUsername(), actionCardText.getDamageAmountToPay(), userGameStatus.getLevel());

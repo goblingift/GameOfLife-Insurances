@@ -44,10 +44,10 @@
 
             <div>
                 <div class="alert alert-success" role="alert">
-                  <h4 class="alert-heading"><a th:text="#{gameover.title}" /></h4>
-                  <p><a th:text="#{gameover.subtitle}" /></p>
-                  <hr>
-                  <p class="mb-0"><a th:text="#{gameover.subtitle2}" /></p>
+                    <h4 class="alert-heading"><a th:text="#{gameover.title}" /></h4>
+                    <p><a th:text="#{gameover.subtitle}" /></p>
+                    <hr>
+                        <p class="mb-0"><a th:text="#{gameover.subtitle2}" /></p>
                 </div>
             </div>
 
@@ -62,7 +62,7 @@
                     <div id="piechart-insurance-claims" style="width: 600px; height: 700px;"></div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col">
                     <div id="barchart-allplayers" style="width: 1900px; height: 600px;"></div>
@@ -71,122 +71,123 @@
 
             <div class="mb-5"></div>
 
-            <div class="border">
-                <div class="container">
-                    <div class="row">
-                        <div class="col">
-                            <h3>Endergebniss</h3>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <a>Bezahlte Versicherungsbeiträge:</a>
-                        </div>
-                        <div class="col">
-                            <strong><span>[[${#numbers.formatCurrency(summary.paidCostsSum)}]]</span></strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <a>Übernommene Schäden durch Versicherung:</a>
-                        </div>
-                        <div class="col">
-                            <strong><span>[[${#numbers.formatCurrency(summary.savedMoneySum)}]]</span></strong>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <a>Selbst gezahlte Schadenssummen:</a>
-                        </div>
-                        <div class="col">
-                            <strong><span>[[${#numbers.formatCurrency(summary.paidDamageCostsSum)}]]</span></strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div th:each="actObject,iterStat : ${allPlayerSummary}" style="display:none">
                 <div class="container allplayer-div" th:data-username="${actObject.username}"
                      th:data-insurance-fees="${actObject.paidCostsSum}" th:data-insurance-refunds="${actObject.savedMoneySum}" th:data-insurance-claims="${actObject.paidDamageCostsSum}">
                 </div>
             </div>
 
-            <div class="border" th:each="actObject,iterStat : ${summary.insuranceSummaries}">
-                <div class="container insurance-div" th:data-insurance-name="${actObject.insuranceName}"
-                     th:data-insurance-fees="${actObject.paidCosts}" th:data-insurance-refunds="${actObject.savedMoney}" th:data-insurance-claims="${actObject.paidDamageCosts}">
-                    <div class="row">
-                        <div class="col insurance-name">
-                            <strong><a th:text="${actObject.insuranceName}" /></strong>
-                        </div>
-                    </div>
-                    <div class="row" th:if="${actObject.agreed}">
-                        <div class="col text-right">
-                            <a>Gebuchter Versicherungstarif:</a>
-                        </div>
-                        <div class="col">
-                            <span><a th:text="${actObject.selectedInsurance}" /></span>
-                        </div>
-                    </div>
-                    <div class="row" th:if="${actObject.agreed}">
-                        <div class="col text-right">
-                            <a>Versicherungsjahre:</a>
-                        </div>
-                        <div class="col">
-                            <span><a th:text="${actObject.years}" /> Jahre</span>
-                        </div>
-                    </div>
-                    <div class="row" th:if="${!actObject.agreed}">
-                        <div class="col">
-                            <a>(Versicherung wurde nicht abgeschlossen)</a>
-                        </div>
-                    </div>
-                    <div class="row" th:if="${actObject.agreed}">
-                        <div class="col text-right">
-                            <a>Gezahlte Versicherungsbeiträge:</a>
-                        </div>
-                        <div class="col">
-                            <span>[[${#numbers.formatCurrency(actObject.paidCosts)}]]</span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col text-right">
-                            <a>Anzahl von Versicherungsfällen:</a>
-                        </div>
-                        <div class="col">
-                            <span><a th:text="${actObject.damageCases}" /></span>
-                        </div>
-                    </div>
-                    <div class="row" th:if="${actObject.agreed}">
-                        <div class="col text-right">
-                            <div th:switch="${actObject.insuranceName}"> 
-                                <a th:case="Berufsunfähigkeitsversicherung">Beglichener Verdienstausfall (Von Versicherung erstattet):</a>
-                                <a th:case="*">Übernommene Schadenssummen durch Versicherung:</a> 
+            <div class="content-detail-view" th:if="${!isAdmin}">
+                <div class="border">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h3>Endergebniss</h3>
                             </div>
                         </div>
-                        <div class="col">
-                            <span>[[${#numbers.formatCurrency(actObject.savedMoney)}]]</span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col text-right">
-                            <div th:switch="${actObject.insuranceName}"> 
-                                <a th:case="Berufsunfähigkeitsversicherung">Verdienstausfall:</a>
-                                <a th:case="*">Selbst gezahlte Schadenssummen:</a> 
+                        <div class="row">
+                            <div class="col">
+                                <a>Bezahlte Versicherungsbeiträge:</a>
+                            </div>
+                            <div class="col">
+                                <strong><span>[[${#numbers.formatCurrency(summary.paidCostsSum)}]]</span></strong>
                             </div>
                         </div>
-                        <div class="col">
-                            <span>[[${#numbers.formatCurrency(actObject.paidDamageCosts)}]]</span>
+                        <div class="row">
+                            <div class="col">
+                                <a>Übernommene Schäden durch Versicherung:</a>
+                            </div>
+                            <div class="col">
+                                <strong><span>[[${#numbers.formatCurrency(summary.savedMoneySum)}]]</span></strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a>Selbst gezahlte Schadenssummen:</a>
+                            </div>
+                            <div class="col">
+                                <strong><span>[[${#numbers.formatCurrency(summary.paidDamageCostsSum)}]]</span></strong>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="border" th:each="actObject,iterStat : ${summary.insuranceSummaries}">
+                    <div class="container insurance-div" th:data-insurance-name="${actObject.insuranceName}"
+                         th:data-insurance-fees="${actObject.paidCosts}" th:data-insurance-refunds="${actObject.savedMoney}" th:data-insurance-claims="${actObject.paidDamageCosts}">
+                        <div class="row">
+                            <div class="col insurance-name">
+                                <strong><a th:text="${actObject.insuranceName}" /></strong>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.agreed}">
+                            <div class="col text-right">
+                                <a>Gebuchter Versicherungstarif:</a>
+                            </div>
+                            <div class="col">
+                                <span><a th:text="${actObject.selectedInsurance}" /></span>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.agreed}">
+                            <div class="col text-right">
+                                <a>Versicherungsjahre:</a>
+                            </div>
+                            <div class="col">
+                                <span><a th:text="${actObject.years}" /> Jahre</span>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!actObject.agreed}">
+                            <div class="col">
+                                <a>(Versicherung wurde nicht abgeschlossen)</a>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.agreed}">
+                            <div class="col text-right">
+                                <a>Gezahlte Versicherungsbeiträge:</a>
+                            </div>
+                            <div class="col">
+                                <span>[[${#numbers.formatCurrency(actObject.paidCosts)}]]</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-right">
+                                <a>Anzahl von Versicherungsfällen:</a>
+                            </div>
+                            <div class="col">
+                                <span><a th:text="${actObject.damageCases}" /></span>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.agreed}">
+                            <div class="col text-right">
+                                <div th:switch="${actObject.insuranceName}"> 
+                                    <a th:case="Berufsunfähigkeitsversicherung">Beglichener Verdienstausfall (Von Versicherung erstattet):</a>
+                                    <a th:case="Risikolebensversicherung">Überwiesene Schadensentschädigung durch Versicherung:</a>
+                                    <a th:case="*">Übernommene Schadenssummen durch Versicherung:</a> 
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span>[[${#numbers.formatCurrency(actObject.savedMoney)}]]</span>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.insuranceName != 'Risikolebensversicherung'}">
+                            <div class="col text-right">
+                                <div th:switch="${actObject.insuranceName}"> 
+                                    <a th:case="Berufsunfähigkeitsversicherung">Verdienstausfall:</a>
+                                    <a th:case="*">Selbst gezahlte Schadenssummen:</a> 
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span>[[${#numbers.formatCurrency(actObject.paidDamageCosts)}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-
-
         </div>
 
+
         <script th:inline="javascript">
-
-
             $("#form_new_game").submit(function (e) {
                 console.log("User triggered new-game reset.");
                 e.preventDefault();
@@ -198,14 +199,14 @@
                 return true;
             });
 
-
-
             google.charts.load('current', {'packages': ['corechart']});
             google.charts.load('current', {'packages': ['bar']});
+        </script>
+
+
+        <script th:if="${!isAdmin}" th:inline="javascript">
             google.charts.setOnLoadCallback(drawCharts);
-
             function drawCharts() {
-
 
                 // draw pie chart with insurance costs
                 var dataTableInsuranceCosts = new google.visualization.DataTable({
@@ -320,7 +321,7 @@
                         {label: 'Bezahlte Versicherungsschäden', type: 'number'}
                     ]
                 });
-                
+
                 $('div.allplayer-div').each(function (i, obj) {
                     dataTableAllPlayers.addRow([
                         {v: obj.getAttribute('data-username')},
@@ -334,15 +335,54 @@
                 formatter4.format(dataTableAllPlayers, 1);
                 formatter4.format(dataTableAllPlayers, 2);
                 formatter4.format(dataTableAllPlayers, 3);
-                
+
                 var options4 = {
                     title: 'Vergleich mit anderen Mitspielern'
                 };
-                
+
                 var chart = new google.charts.Bar(document.getElementById('barchart-allplayers'));
                 chart.draw(dataTableAllPlayers, google.charts.Bar.convertOptions(options4));
             }
-            
+
+        </script>
+
+        <script th:if="${isAdmin}" th:inline="javascript">
+            google.charts.setOnLoadCallback(drawCharts);
+            function drawCharts() {
+
+                // ---------------------------------------------------
+                // draw barchart for player comparison
+                var dataTableAllPlayers = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Spielername', type: 'string'},
+                        {label: 'Bezahlte Versicherungsbeiträge', type: 'number'},
+                        {label: 'Erstattete Versicherungsschäden', type: 'number'},
+                        {label: 'Bezahlte Versicherungsschäden', type: 'number'}
+                    ]
+                });
+
+                $('div.allplayer-div').each(function (i, obj) {
+                    dataTableAllPlayers.addRow([
+                        {v: obj.getAttribute('data-username')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-fees'))},
+                        {v: parseFloat(obj.getAttribute('data-insurance-refunds'))},
+                        {v: parseFloat(obj.getAttribute('data-insurance-claims'))}
+                    ]);
+                });
+
+                var formatter4 = new google.visualization.NumberFormat({prefix: '€'});
+                formatter4.format(dataTableAllPlayers, 1);
+                formatter4.format(dataTableAllPlayers, 2);
+                formatter4.format(dataTableAllPlayers, 3);
+
+                var options4 = {
+                    title: 'Vergleich mit anderen Mitspielern'
+                };
+
+                var chart = new google.charts.Bar(document.getElementById('barchart-allplayers'));
+                chart.draw(dataTableAllPlayers, google.charts.Bar.convertOptions(options4));
+            }
+
         </script>
     </body>
 
