@@ -154,6 +154,12 @@ public class GameCardService {
      * @return true if successful, or false if otherwise.
      */
     public boolean handleUserDecision(String username, int level, int answer) {
+        
+        if (answer == 0) {
+            logger.warn("User {} tried to submit decision for level {} with answer: {} - this is faulty, so set to value 1 as default.", username, level, answer);
+            answer = 1;
+        }
+        
 
         UserGameStatus userGameStatus = userGameStatusRepository.findByUsername(username);
         User user = userService.findUserByFullname(username);

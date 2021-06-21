@@ -69,6 +69,7 @@ All rights reserved
 
                     console.log("will fire ajax post with params:");
                     console.log("level=" + level);
+                    $("#btn_nextCard").prop("disabled",true);
 
                     $.post("/game/make-decision",
                             {level: level, answer: 0},
@@ -88,6 +89,7 @@ All rights reserved
                                                 $('#input_age').val("GAME OVER");
                                             });
                                 }
+                                $("#btn_nextCard").prop("disabled",false);
                             }
                     );
 

@@ -189,10 +189,10 @@ public class GameController {
         Optional<ActionCard> returnValue = Optional.empty();
         
         Random rand = new Random();
-        int randomNum = rand.nextInt(10) + 1;
+        int randomNum = rand.nextInt(5) + 1;
         logger.info("Rolled dice for neutral actioncard: {}", randomNum);
         
-        if (randomNum == 5) {
+        if (randomNum == 3) {
             List<ActionCard> allActionCards = actionCardRepository.findAll();
             List<ActionCard> alreadyDrawnActionCards = userGameStatus.getNeutralActionCards();
             

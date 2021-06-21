@@ -36,6 +36,7 @@ All rights reserved
                     console.log("will fire ajax post with params:");
                     console.log("level=" + level);
                     console.log("answer=" + answer);
+                    $("#btn_nextCard").prop("disabled",true);
 
                     $.post("/game/make-decision",
                             {level: level, answer: answer},
@@ -46,6 +47,7 @@ All rights reserved
                                 // Update level counter
                                 $('#input_level').val(parseInt(level) + 1);
                                 $('#input_age').val(parseInt(level) * 2 + 18);
+                                $("#btn_nextCard").prop("disabled",false);
                             }
                     );
 

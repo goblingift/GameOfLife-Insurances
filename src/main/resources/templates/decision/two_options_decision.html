@@ -56,6 +56,7 @@ All rights reserved
                     console.log("will fire ajax post with params:");
                     console.log("level=" + level);
                     console.log("answer=" + answer);
+                    $("#btn_nextCard").prop("disabled",true);
 
                     $.post("/game/make-decision",
                             {level: level, answer: answer},
@@ -70,6 +71,7 @@ All rights reserved
                                     console.log("An error occured- reload game page again");
                                     window.location.href = '/game';
                                 }
+                                $("#btn_nextCard").prop("disabled",false);
                             }
                     );
 

@@ -173,7 +173,7 @@ public class CardPicker {
             allActionCards.addAll(homeInsuranceActionCards);
         }
         
-        if (userGameStatus.getLevel() > Insurance.TERMLIFE_INSURANCE.getLevel()) {
+        if (userGameStatus.getLevel() > Insurance.TERMLIFE_INSURANCE.getLevel() && userGameStatus.getLevel() < 28) {
             List<InsuranceWithType> termLifeInsuranceActionCards = termLifeInsuranceActionCardRepository.findAll().stream().map(ac -> new InsuranceWithType(ac.getId(), Insurance.TERMLIFE_INSURANCE)).collect(Collectors.toList());
             allActionCards.addAll(termLifeInsuranceActionCards);
         }
