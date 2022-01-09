@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,12 @@ public class GameSummaryService {
         
         List<GameOverSummary> returnValue = new ArrayList<>();
         List<UserGameStatus> players = userGameStatusRepository.findAll();
-        for (UserGameStatus actPlayer : players) {
+        
+        // filter all admin-users, we dont wanna see their results
+        List<UserGameStatus> filteredPlayers = players.stream().filter(status -> !status.getUsername().contains("admin"))
+                .collect(Collectors.toList());
+                
+        for (UserGameStatus actPlayer : filteredPlayers) {
             GameOverSummary actGameOverSummary = new GameOverSummary();
             actGameOverSummary.setUsername(actPlayer.getUsername());
             actGameOverSummary.setPaidCostsSum(actPlayer.getPaidForInsurances());
