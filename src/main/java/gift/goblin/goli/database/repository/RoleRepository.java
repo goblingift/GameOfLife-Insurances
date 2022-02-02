@@ -5,6 +5,7 @@
 package gift.goblin.goli.database.repository;
 
 import gift.goblin.goli.database.model.Role;
+import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -13,5 +14,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface RoleRepository extends MongoRepository<Role, String>{
     
-    Role findByRole(String role);
+    Optional<Role> findByRole(String role);
 }

@@ -19,6 +19,8 @@ public class Role {
     
     public static final String ROLE_USER = "USER";
     public static final String ROLE_ADMIN = "ADMIN";
+    public static final String ROLE_ID_USER = "1000";
+    public static final String ROLE_ID_ADMIN = "2000";
     
     @Id
     private String id;

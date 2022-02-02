@@ -16,6 +16,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "user")
 public class User {
 
+    public static final String ID_ADMIN = "2000"; 
+    
     @Id
     private String id;
     private String password;
@@ -24,8 +26,17 @@ public class User {
     private Set<Role> roles;
     @DBRef
     private Set<ContractedInsurance> insurances;
-   
 
+    public User() {
+    }
+
+    public User(String id, String password, String fullname, Set<Role> roles) {
+        this.id = id;
+        this.password = password;
+        this.fullname = fullname;
+        this.roles = roles;
+    }
+   
     public String getId() {
         return id;
     }

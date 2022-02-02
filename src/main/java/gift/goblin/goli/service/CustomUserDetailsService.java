@@ -12,6 +12,7 @@ import gift.goblin.goli.database.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +49,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     public void saveUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Role userRole = roleRepository.findByRole(WebSecurityConfig.ROLE_USER);
+        Optional<Role> userRole = roleRepository.findByRole(WebSecurityConfig.ROLE_USER);
         Set<Role> roles = new HashSet<>();
-        roles.add(userRole);
+        roles.add(userRole.get());
         user.setRoles(roles);
         User savedUser = userRepository.save(user);
         logger.info("Successful created user: {}", savedUser);
