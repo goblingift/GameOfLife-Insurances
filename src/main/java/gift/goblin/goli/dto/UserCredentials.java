@@ -12,6 +12,15 @@ package gift.goblin.goli.dto;
 public class UserCredentials {
     
     private String username;
+    
+    private String password;
+
+    public UserCredentials(String username) {
+        this.username = username;
+    }
+
+    public UserCredentials() {
+    }
 
     public String getUsername() {
         return username;
@@ -21,9 +30,17 @@ public class UserCredentials {
         this.username = username;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
-        return "UserCredentials{" + "username=" + username + '}';
+        return "UserCredentials{" + "username=" + username + ", password=HIDDEN" + '}';
     }
 
 }

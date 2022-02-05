@@ -5,15 +5,26 @@
         <div class="container-fluid" style="margin-top: 20px;">
 
             <form th:action="@{/login/submit}" th:object="${userForm}" method="POST">
-                
-                <label for="inputPassword5" class="text-headline">Benutzername eingeben:</label>
-                <input type="text" th:field="*{username}" id="inputUsername" class="form-control" aria-describedby="usernameHelpBlock">
-                <small id="usernameHelpBlock" class="form-text text-muted">
-                  Bitte gib hier deinen Benutzernamen ein und klicke auf Anmelden
-                </small>
-                <button type="submit" class="btn btn-lg btn-success full-width mt-2">
-                    Anmelden
-                </button>
+                <div class="row">
+                    <div class="col">
+                        <label for="inputUsername" class="text-headline">Login:</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input type="text" th:field="*{username}" id="inputUsername" class="form-control" aria-describedby="usernameHelpBlock" placeholder="Benutzername hier eingeben">
+                    </div>
+                </div>
+                <div class="row" th:if="${isAdmin}">
+                    <div class="col">
+                        <input type="password" th:field="*{password}" id="inputPassword" class="form-control" placeholder="Passwort hier eingeben">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit" class="btn btn-lg btn-success full-width mt-2">Login</button>
+                    </div>
+                </div>
             </form>
                 
             
