@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.info.BuildProperties;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -40,6 +42,7 @@ public class LoginController {
     
     private static final String ATTRIBUTE_ISADMIN = "isAdmin";
     private static final String ATTRIBUTE_USERNAME = "username";
+    private static final String ATTRIBUTE_INVALID_PW = "invalidPw";
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     
     @Autowired
@@ -50,6 +53,9 @@ public class LoginController {
     
     @Autowired
     private UserGameStatusRepository userGameStatusRepository;
+    
+    @Autowired
+    private AuthenticationManager authenticationManager;
     
     @Autowired
     private UserService userService;
@@ -87,11 +93,10 @@ public class LoginController {
             
             // check if user is admin- then he needs to enter password to login
             if (userService.isUserAdmin(userDetails)) {
-                if (StringUtils.isEmptyOrWhitespace(userDetails.getPassword())) {
-                    return displayPasswordInputAdminUser(model, userDetails.getUsername());
+                if (StringUtils.isEmptyOrWhitespace(userForm.getPassword())) {
+                    return displayPasswordInputAdminUser(model, userDetails.getUsername(), false);
                 } else {
-                    // todo LOGIN ADMIN
-                    return null;
+                    return loginAdminUser(userForm, session, model);
                 }
             } else {
                 return loginCommonUser(userDetails, session);
@@ -101,10 +106,13 @@ public class LoginController {
         }
     }
 
-    private String displayPasswordInputAdminUser(Model model, String username) {
+    private String displayPasswordInputAdminUser(Model model, String username, boolean invalidLoginAttempt) {
         logger.info("Admin user {} tries to login- reload page with password input.");
         model.addAttribute(ATTRIBUTE_ISADMIN, "true");
         model.addAttribute(ATTRIBUTE_USERNAME, username);
+        if (invalidLoginAttempt) {
+            model.addAttribute(ATTRIBUTE_INVALID_PW, true);
+        }
         return renderLoginForm(model);
     }
 
@@ -123,12 +131,21 @@ public class LoginController {
         return "redirect:/home";
     }
     
-    private String loginAdminUser(UserDetails userDetails, HttpSession session) {
+    private String loginAdminUser(UserCredentials userForm, HttpSession session, Model model) {
+        logger.info("Try to login admin-user now: {}", userForm.getUsername());
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userForm.getUsername(), userForm.getPassword());
         
+        try {
+            Authentication authentication = authenticationManager.authenticate(authToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            session.setAttribute(WebSecurityConfig.SESSION_FIELD_USERNAME, userForm.getUsername());
+        } catch (BadCredentialsException e) {
+            logger.warn("Invalid credentials to login admin-user: {}", userForm.getUsername());
+            return displayPasswordInputAdminUser(model, userForm.getUsername(), true);
+        }
         
-        
+        return "redirect:/home";
     }
-    
     
     /**
      * Creates new UserGameStatus and saves into database.

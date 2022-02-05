@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -59,14 +60,16 @@ public class DatabaseInitializer {
             logger.info("Couldnt find admin-user by its username: {} - will create em now in database.", adminUsername);
             Optional<Role> adminRole = roleRepository.findById(Role.ROLE_ID_ADMIN);
             if (adminRole.isPresent()) {
-                User newUser = new User(User.ID_ADMIN, adminDefaultPw, adminUsername, Set.of(adminRole.get()));
+                BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                String encodedPassword = passwordEncoder.encode(adminDefaultPw);
+                User newUser = new User(User.ID_ADMIN, encodedPassword, adminUsername, Set.of(adminRole.get()));
                 logger.info("Will create new admin user right now: {}", newUser);
                 userRepository.save(newUser);
             } else {
                 logger.warn("No role ADMIN found- cant create admin-user right now!");
             }
         }
-        
+
     }
 
     private void createRoleIfNotFound(String roleId, String roleName) {

@@ -1,8 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
     <head th:replace="library_includes :: frontend_libraries" />
     <body>
-        
+
         <div class="container-fluid" style="margin-top: 20px;">
+
+            <div th:if="${invalidPw}" class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Ungültiges Passwort</strong> Bitte geben Sie das Passwort erneut ein.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
 
             <form th:action="@{/login/submit}" th:object="${userForm}" method="POST">
                 <div class="row">
@@ -26,8 +31,8 @@
                     </div>
                 </div>
             </form>
-                
-            
+
+
             <!-- Footer -->
             <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
                 <ul class="navbar-nav mr-auto">
