@@ -1,0 +1,54 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="library_includes :: frontend_libraries" />
+    <body>
+
+        <div class="container-fluid" style="margin-top: 20px;">
+
+            <div th:if="${invalidPw}" class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Ungültiges Passwort</strong> Bitte geben Sie das Passwort erneut ein.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <form th:action="@{/login/submit}" th:object="${userForm}" method="POST">
+                <div class="row">
+                    <div class="col">
+                        <label for="inputUsername" class="text-headline">Login:</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input type="text" th:field="*{username}" id="inputUsername" class="form-control" aria-describedby="usernameHelpBlock" placeholder="Benutzername hier eingeben">
+                    </div>
+                </div>
+                <div class="row" th:if="${isAdmin}">
+                    <div class="col">
+                        <input type="password" th:field="*{password}" id="inputPassword" class="form-control" placeholder="Passwort hier eingeben">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit" class="btn btn-lg btn-success full-width mt-2">Login</button>
+                    </div>
+                </div>
+            </form>
+
+
+            <!-- Footer -->
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="light-grey-color" th:text="${build_artifact}" />
+                        <img class="goblin-logo-small" height="20px" th:src="@{/images/goblin_shadow_cropped.png}" />
+                        <a class="light-grey-color" th:text="${build_version}" />
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>

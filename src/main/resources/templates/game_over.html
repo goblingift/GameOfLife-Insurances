@@ -1,0 +1,389 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="library_includes :: frontend_libraries" />
+    <body>
+
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark" th:fragment="header_nav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-danger" id="btn_reset" data-toggle="modal" data-target="#modal-dialog-reset"><span class="btn-label"><i class="fas fa-reply fa-lg"></i></span> Neues Spiel</button>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-primary" id="btn_home" onclick="location.href = '/home';"><span class="btn-label"><i class="fas fa-home fa-lg"></i></span> Hauptmenü</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="modal fade" id="modal-dialog-reset" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Neues Spiel?</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form_new_game" method="POST">
+                            <div class="form-group border p-1">
+                                <a>Dein Spielfortschritt zurücksetzen und neu beginnen?</a>
+                            </div>
+
+                            <div class="row">
+                                <div class="col" align="center">
+                                    <button name="submit" type="submit" class="btn btn-success" style="height: 60px; width: 50%;">Okay</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid" style="margin-top: 20px;">
+
+            <div>
+                <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading"><a th:text="#{gameover.title}" /></h4>
+                    <p><a th:text="#{gameover.subtitle}" /></p>
+                    <hr>
+                        <p class="mb-0"><a th:text="#{gameover.subtitle2}" /></p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div id="piechart-insurance-costs" style="width: 600px; height: 700px;"></div>
+                </div>
+                <div class="col">
+                    <div id="piechart-insurance-refunds" style="width: 600px; height: 700px;"></div>
+                </div>
+                <div class="col">
+                    <div id="piechart-insurance-claims" style="width: 600px; height: 700px;"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div id="barchart-allplayers" style="width: 1900px; height: 600px;"></div>
+                </div>
+            </div>
+
+            <div class="mb-5"></div>
+
+            <div th:each="actObject,iterStat : ${allPlayerSummary}" style="display:none">
+                <div class="container allplayer-div" th:data-username="${actObject.username}"
+                     th:data-insurance-fees="${actObject.paidCostsSum}" th:data-insurance-refunds="${actObject.savedMoneySum}" th:data-insurance-claims="${actObject.paidDamageCostsSum}">
+                </div>
+            </div>
+
+            <div class="content-detail-view" th:if="${!isAdmin}">
+                <div class="border">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <h3>Endergebniss</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a>Bezahlte Versicherungsbeiträge:</a>
+                            </div>
+                            <div class="col">
+                                <strong><span>[[${#numbers.formatCurrency(summary.paidCostsSum)}]]</span></strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a>Übernommene Schäden durch Versicherung:</a>
+                            </div>
+                            <div class="col">
+                                <strong><span>[[${#numbers.formatCurrency(summary.savedMoneySum)}]]</span></strong>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a>Selbst gezahlte Schadenssummen:</a>
+                            </div>
+                            <div class="col">
+                                <strong><span>[[${#numbers.formatCurrency(summary.paidDamageCostsSum)}]]</span></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border" th:each="actObject,iterStat : ${summary.insuranceSummaries}">
+                    <div class="container insurance-div" th:data-insurance-name="${actObject.insuranceName}"
+                         th:data-insurance-fees="${actObject.paidCosts}" th:data-insurance-refunds="${actObject.savedMoney}" th:data-insurance-claims="${actObject.paidDamageCosts}">
+                        <div class="row">
+                            <div class="col insurance-name">
+                                <strong><a th:text="${actObject.insuranceName}" /></strong>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.agreed}">
+                            <div class="col text-right">
+                                <a>Gebuchter Versicherungstarif:</a>
+                            </div>
+                            <div class="col">
+                                <span><a th:text="${actObject.selectedInsurance}" /></span>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.agreed}">
+                            <div class="col text-right">
+                                <a>Versicherungsjahre:</a>
+                            </div>
+                            <div class="col">
+                                <span><a th:text="${actObject.years}" /> Jahre</span>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${!actObject.agreed}">
+                            <div class="col">
+                                <a>(Versicherung wurde nicht abgeschlossen)</a>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.agreed}">
+                            <div class="col text-right">
+                                <a>Gezahlte Versicherungsbeiträge:</a>
+                            </div>
+                            <div class="col">
+                                <span>[[${#numbers.formatCurrency(actObject.paidCosts)}]]</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-right">
+                                <a>Anzahl von Versicherungsfällen:</a>
+                            </div>
+                            <div class="col">
+                                <span><a th:text="${actObject.damageCases}" /></span>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.agreed}">
+                            <div class="col text-right">
+                                <div th:switch="${actObject.insuranceName}"> 
+                                    <a th:case="Berufsunfähigkeitsversicherung">Beglichener Verdienstausfall (Von Versicherung erstattet):</a>
+                                    <a th:case="Risikolebensversicherung">Überwiesene Schadensentschädigung durch Versicherung:</a>
+                                    <a th:case="*">Übernommene Schadenssummen durch Versicherung:</a> 
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span>[[${#numbers.formatCurrency(actObject.savedMoney)}]]</span>
+                            </div>
+                        </div>
+                        <div class="row" th:if="${actObject.insuranceName != 'Risikolebensversicherung'}">
+                            <div class="col text-right">
+                                <div th:switch="${actObject.insuranceName}"> 
+                                    <a th:case="Berufsunfähigkeitsversicherung">Verdienstausfall:</a>
+                                    <a th:case="*">Selbst gezahlte Schadenssummen:</a> 
+                                </div>
+                            </div>
+                            <div class="col">
+                                <span>[[${#numbers.formatCurrency(actObject.paidDamageCosts)}]]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <script th:inline="javascript">
+            $("#form_new_game").submit(function (e) {
+                console.log("User triggered new-game reset.");
+                e.preventDefault();
+
+                $.get("/game/new-game").done(function (fragment) { // get from controller
+                    window.location.href = '/game';
+                });
+
+                return true;
+            });
+
+            google.charts.load('current', {'packages': ['corechart']});
+            google.charts.load('current', {'packages': ['bar']});
+        </script>
+
+
+        <script th:if="${!isAdmin}" th:inline="javascript">
+            google.charts.setOnLoadCallback(drawCharts);
+            function drawCharts() {
+
+                // draw pie chart with insurance costs
+                var dataTableInsuranceCosts = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Answer', type: 'string'},
+                        {label: 'Result', type: 'number'}
+                    ]
+                });
+
+                $('div.insurance-div').each(function (i, obj) {
+                    dataTableInsuranceCosts.addRow([
+                        {v: obj.getAttribute('data-insurance-name')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-fees'))}
+                    ]);
+                });
+
+                var dataSummaryInsuranceCosts = google.visualization.data.group(
+                        dataTableInsuranceCosts,
+                        [0],
+                        [{'column': 1, 'aggregation': google.visualization.data.sum, 'type': 'number'}]
+                        );
+
+                var formatter = new google.visualization.NumberFormat({prefix: '€'});
+                formatter.format(dataSummaryInsuranceCosts, 1);
+
+                var options = {
+                    title: 'Ausgaben für Versicherungsbeiträge',
+                    pieSliceText: 'value',
+                    legend: {position: 'top', maxLines: 10}
+                };
+
+                var insuranceCostChart = new google.visualization.PieChart(document.getElementById('piechart-insurance-costs'));
+                insuranceCostChart.draw(dataSummaryInsuranceCosts, options);
+
+                // ---------------------------------------------------
+                // draw pie chart with refund amounts of insurances
+
+                var dataTableInsuranceRefunds = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Answer', type: 'string'},
+                        {label: 'Result', type: 'number'}
+                    ]
+                });
+
+                $('div.insurance-div').each(function (i, obj) {
+                    dataTableInsuranceRefunds.addRow([
+                        {v: obj.getAttribute('data-insurance-name')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-refunds'))}
+                    ]);
+                });
+
+                var dataSummaryInsuranceRefunds = google.visualization.data.group(
+                        dataTableInsuranceRefunds,
+                        [0],
+                        [{'column': 1, 'aggregation': google.visualization.data.sum, 'type': 'number'}]
+                        );
+
+                var formatter2 = new google.visualization.NumberFormat({prefix: '€'});
+                formatter2.format(dataSummaryInsuranceRefunds, 1);
+
+                var options2 = {
+                    title: 'Erstattete Schadensfälle',
+                    pieSliceText: 'value',
+                    legend: {position: 'top', maxLines: 10}
+                };
+
+                var insuranceCostChart = new google.visualization.PieChart(document.getElementById('piechart-insurance-refunds'));
+                insuranceCostChart.draw(dataSummaryInsuranceRefunds, options2);
+
+                // ---------------------------------------------------
+                // draw pie chart with refund amounts of insurances
+
+                var dataTableInsuranceClaims = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Answer', type: 'string'},
+                        {label: 'Result', type: 'number'}
+                    ]
+                });
+
+                $('div.insurance-div').each(function (i, obj) {
+                    dataTableInsuranceClaims.addRow([
+                        {v: obj.getAttribute('data-insurance-name')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-claims'))}
+                    ]);
+                });
+
+                var dataSummaryInsuranceClaims = google.visualization.data.group(
+                        dataTableInsuranceClaims,
+                        [0],
+                        [{'column': 1, 'aggregation': google.visualization.data.sum, 'type': 'number'}]
+                        );
+
+                var formatter3 = new google.visualization.NumberFormat({prefix: '€'});
+                formatter3.format(dataSummaryInsuranceClaims, 1);
+
+                var options3 = {
+                    title: 'Selbst gezahlte Schadensfälle',
+                    pieSliceText: 'value',
+                    legend: {position: 'top', maxLines: 10}
+                };
+
+                var insuranceClaimsChart = new google.visualization.PieChart(document.getElementById('piechart-insurance-claims'));
+                insuranceClaimsChart.draw(dataSummaryInsuranceClaims, options3);
+
+                // ---------------------------------------------------
+                // draw barchart for player comparison
+                var dataTableAllPlayers = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Spielername', type: 'string'},
+                        {label: 'Bezahlte Versicherungsbeiträge', type: 'number'},
+                        {label: 'Erstattete Versicherungsschäden', type: 'number'},
+                        {label: 'Bezahlte Versicherungsschäden', type: 'number'}
+                    ]
+                });
+
+                $('div.allplayer-div').each(function (i, obj) {
+                    dataTableAllPlayers.addRow([
+                        {v: obj.getAttribute('data-username')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-fees'))},
+                        {v: parseFloat(obj.getAttribute('data-insurance-refunds'))},
+                        {v: parseFloat(obj.getAttribute('data-insurance-claims'))}
+                    ]);
+                });
+
+                var formatter4 = new google.visualization.NumberFormat({prefix: '€'});
+                formatter4.format(dataTableAllPlayers, 1);
+                formatter4.format(dataTableAllPlayers, 2);
+                formatter4.format(dataTableAllPlayers, 3);
+
+                var options4 = {
+                    title: 'Vergleich mit anderen Mitspielern'
+                };
+
+                var chart = new google.charts.Bar(document.getElementById('barchart-allplayers'));
+                chart.draw(dataTableAllPlayers, google.charts.Bar.convertOptions(options4));
+            }
+
+        </script>
+
+        <script th:if="${isAdmin}" th:inline="javascript">
+            google.charts.setOnLoadCallback(drawCharts);
+            function drawCharts() {
+
+                // ---------------------------------------------------
+                // draw barchart for player comparison
+                var dataTableAllPlayers = new google.visualization.DataTable({
+                    cols: [
+                        {label: 'Spielername', type: 'string'},
+                        {label: 'Bezahlte Versicherungsbeiträge', type: 'number'},
+                        {label: 'Erstattete Versicherungsschäden', type: 'number'},
+                        {label: 'Bezahlte Versicherungsschäden', type: 'number'}
+                    ]
+                });
+
+                $('div.allplayer-div').each(function (i, obj) {
+                    dataTableAllPlayers.addRow([
+                        {v: obj.getAttribute('data-username')},
+                        {v: parseFloat(obj.getAttribute('data-insurance-fees'))},
+                        {v: parseFloat(obj.getAttribute('data-insurance-refunds'))},
+                        {v: parseFloat(obj.getAttribute('data-insurance-claims'))}
+                    ]);
+                });
+
+                var formatter4 = new google.visualization.NumberFormat({prefix: '€'});
+                formatter4.format(dataTableAllPlayers, 1);
+                formatter4.format(dataTableAllPlayers, 2);
+                formatter4.format(dataTableAllPlayers, 3);
+
+                var options4 = {
+                    title: 'Vergleich mit anderen Mitspielern'
+                };
+
+                var chart = new google.charts.Bar(document.getElementById('barchart-allplayers'));
+                chart.draw(dataTableAllPlayers, google.charts.Bar.convertOptions(options4));
+            }
+
+        </script>
+    </body>
+
+</html>

@@ -1,0 +1,131 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="library_includes :: frontend_libraries" />
+    <body>
+
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark" th:fragment="header_nav">
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="inputGroup-sizing-default">Alter:</span>
+                        <input disabled style="display:none" type="text" th:value="${userGameStatus.level}" id="input_level" class="form-control">
+                        <input style="width: 150px;" disabled type="text" th:value="${userGameStatus.level * 2 + 18}" id="input_age" class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Jahre</span>
+                        </div>
+                    </div>
+                </li>
+                
+            </ul>
+
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-success" id="btn_nextCard" data-toggle="modal" data-target="#modal-dialog"><span class="btn-label"><i class="fas fa-hand-paper fa-lg"></i></span> Nächste Karte ziehen</button>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-danger" id="btn_reset" data-toggle="modal" data-target="#modal-dialog-reset"><span class="btn-label"><i class="fas fa-reply fa-lg"></i></span> Neues Spiel</button>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="btn-group btn-group-lg mr-2" role="group">
+                        <button type="button" class="btn btn-labeled btn-primary" id="btn_home" onclick="location.href = '/home';"><span class="btn-label"><i class="fas fa-home fa-lg"></i></span> Hauptmenü</button>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div id="replace_div">
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-dialog-reset" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Neues Spiel?</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form_new_game" method="POST">
+                            <div class="form-group border p-1">
+                                <a>Dein Spielfortschritt zurücksetzen und neu beginnen?</a>
+                            </div>
+
+                            <div class="row">
+                                <div class="col" align="center">
+                                    <button name="submit" type="submit" class="btn btn-success" style="height: 60px; width: 50%;">Okay</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container-fluid" style="margin-top: 20px;">
+
+            <img th:src="@{/images/game_board.png}" class="img-fluid" alt="game board image">
+
+                <!-- Footer -->
+                <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
+                    <ul class="navbar-nav mr-auto">
+                    </ul>
+
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="light-grey-color" th:text="${build_artifact}" />
+                            <img class="goblin-logo-small" height="20px" th:src="@{/images/goblin_shadow_cropped.png}" />
+                            <a class="light-grey-color" th:text="${build_version}" />
+                        </li>
+                    </ul>
+
+                    <ul class="navbar-nav ml-auto">
+                    </ul>
+                </nav>
+        </div>
+    </body>
+
+
+    <script th:inline="javascript">
+
+        $(document).ready(function () {
+            $("#btn_nextCard").click(function () {
+                console.log("Clicked nextCard button");
+                $("#replace_div").toggleClass("opacity", true);
+                
+                $.get("/game/get-dialog").done(function (fragment) { // get from controller
+                    $("#replace_div").replaceWith(fragment); // update snippet of page
+                    $("#replace_div").toggleClass("opacity", false);
+                });
+
+            });
+        });
+
+        $("#form_new_game").submit(function (e) {
+            console.log("User triggered new-game reset.");
+            e.preventDefault();
+
+            $.get("/game/new-game").done(function (fragment) { // get from controller
+                $("#input_level").val(1);
+                $("#input_age").val(18);
+            });
+
+            // Adding visual box
+            $('#modal-dialog-reset').modal('hide');
+
+            return true;
+        });
+
+    </script>
+</html>
+
+

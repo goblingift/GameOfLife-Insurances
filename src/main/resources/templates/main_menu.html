@@ -1,0 +1,122 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="library_includes :: frontend_libraries" />
+    <body>
+
+        <div class="container-fluid" style="margin-top: 20px;">
+
+            <div th:if="${createCards}">
+                <a href="/cards/create">
+                    <div class="jumbotron jumbotron-fluid">
+                        <div class="container">
+                            <h1 class="display-4">Neue Versicherungs-Aktionskarte</h1>
+                            <p class="lead">Hier klicken um neue Aktionskarte für Versicherungsschaden zu verfassen</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div th:if="${!createCards}">
+                <div class="jumbotron jumbotron-fluid">
+                    <div class="container">
+                        <h1 class="display-4" style="color: grey;">Neue Versicherungs-Aktionskarte</h1>
+                        <p class="lead">Die Kartenerstellung wurde noch nicht aktiviert</p>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${gameStarted}">
+                <a href="/game">
+                    <div class="jumbotron jumbotron-fluid">
+                        <div class="container">
+                            <h1 class="display-4">Spiel starten</h1>
+                            <p class="lead">Hier klicken um das Spiel zu beginnen</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div th:if="${!gameStarted}">
+                <div class="jumbotron jumbotron-fluid">
+                    <div class="container">
+                        <h1 class="display-4" style="color: grey;">Spiel starten</h1>
+                        <p class="lead">Das Spiel wurde noch nicht aktiviert</p>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${isAdmin}">
+                <a href="/cards/create-neutral-card">
+                    <div class="jumbotron jumbotron-fluid">
+                        <div class="container">
+                            <h1 class="display-4">Neue neutrale Aktionskarte</h1>
+                            <p class="lead">Hier klicken um neue positive Aktionskarte zu verfassen</p>
+                        </div>
+                    </div>
+                </a>
+                <a href="/game-over">
+                    <div class="jumbotron jumbotron-fluid">
+                        <div class="container">
+                            <h1 class="display-4">Spielerauswertung</h1>
+                            <p class="lead">Hier klicken um die Gruppen zu vergleichen</p>
+                        </div>
+                    </div>
+                </a>
+                <div th:if="${gameStarted}">
+                    <a href="/stop-game">
+                        <div class="jumbotron jumbotron-fluid">
+                            <div class="container">
+                                <h1 class="display-4">Spielmodus stoppen</h1>
+                                <p class="lead">Hier klicken um den Spielmodus zu beenden</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div th:if="${!gameStarted}">
+                    <a href="/start-game">
+                        <div class="jumbotron jumbotron-fluid">
+                            <div class="container">
+                                <h1 class="display-4">Spielmodus aktivieren</h1>
+                                <p class="lead">Hier klicken um den Spielmodus zu aktivieren</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div th:if="${createCards}">
+                    <a href="/stop-card-creation">
+                        <div class="jumbotron jumbotron-fluid">
+                            <div class="container">
+                                <h1 class="display-4">Kartenerstellung Stop</h1>
+                                <p class="lead">Hier klicken um die Kartenerstellung zu verbieten</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div th:if="${!createCards}">
+                    <a href="/start-card-creation">
+                        <div class="jumbotron jumbotron-fluid">
+                            <div class="container">
+                                <h1 class="display-4">Kartenerstellung Start</h1>
+                                <p class="lead">Hier klicken um die Kartenerstellung zu erlauben</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
+                <ul class="navbar-nav mr-auto">
+                </ul>
+
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="light-grey-color" th:text="${build_artifact}" />
+                        <img class="goblin-logo-small" height="20px" th:src="@{/images/goblin_shadow_cropped.png}" />
+                        <a class="light-grey-color" th:text="${build_version}" />
+                    </li>
+                </ul>
+
+                <ul class="navbar-nav ml-auto">
+                </ul>
+            </nav>
+        </div>
+    </body>
+</html>

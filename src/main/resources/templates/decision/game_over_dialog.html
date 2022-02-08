@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2021 Andre Kessler (https://github.com/goblingift)
+All rights reserved
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <div class="modal-content" th:fragment="replace_fragment">
+        <div id="replace_div">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" th:text="#{info.title.gameover}"></h5>
+            </div>
+            <div class="modal-body">
+
+                <form id="form_decision" method="GET" th:action="@{/game/game-over}">
+                    <div class="form-group border p-1">
+                        <a th:text="#{info.description.gameover}" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col" align="center">
+                            <button name="submit" type="submit" class="btn btn-success" style="height: 60px; width: 50%;">Okay</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</html>

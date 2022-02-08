@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<!--
+Copyright (C) 2021 Andre Kessler (https://github.com/goblingift)
+All rights reserved
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="replace_fragment">
+        <div id="replace_div">
+            <form method="POST" th:action="${actionUrl}" id="frm_new_actioncard">
+                <input type="hidden" name="insuranceId" th:value="${insuranceId}">
+                    <div class="form-group">
+                        <a class="text-headline">Bitte beschreibe den Versicherungsfall (Hierbei handelt es sich um einen Todesfall):</a> 
+                        <textarea id="textarea" name="text" cols="40" rows="5" required="required" class="form-control"></textarea>
+                    </div>
+
+                    <div class="float-right">
+                    <a role="button" class="btn btn-link" href="/home">Zum Hauptmenü</a>
+                    <button name="submit" id="btn_submit" type="submit" class="btn btn-success">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</html>
