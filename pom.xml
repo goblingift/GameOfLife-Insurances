@@ -10,7 +10,7 @@
     </parent>
     <groupId>gift.goblin</groupId>
     <artifactId>GameOfLifeInsurance</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>GameOfLifeInsurance</name>
     <description>Game of Life with the main focus on private insurances and their costs and benefits</description>
     <properties>
